@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>La Ville Cafe Admin</title>
+<style>
+:root{--bg:#f1f4f2;--card:#fff;--tx:#17231d;--mu:#5f6f66;--ac:#1f4d3a;--on:#fff;--bd:#d7dfda;--new:#c2410c;--prep:#a16207;--rdy:#1d6fb8;--done:#6b7a72}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1512;--card:#18211c;--tx:#e8f0ec;--mu:#9baba2;--ac:#7cc4a0;--on:#0f1512;--bd:#2b3a32;--new:#fb923c;--prep:#facc15;--rdy:#60a5fa;--done:#8a9a91}}
+*{box-sizing:border-box}
+body{margin:0;font:15px/1.4 system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.wrap{max-width:760px;margin:0 auto;padding:14px}
+h1{font-size:20px;margin:0}
+input,button,select{font:inherit;color:inherit}
+input{width:100%;padding:11px;border:1px solid var(--bd);border-radius:8px;background:var(--card)}
+button{padding:9px 13px;border:1px solid var(--bd);border-radius:8px;background:var(--card);cursor:pointer}
+button.p{background:var(--ac);color:var(--on);border-color:var(--ac)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.hide{display:none!important}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}
+.tabs{display:flex;gap:8px;margin-bottom:12px}
+.tabs button.on{background:var(--ac);color:var(--on);border-color:var(--ac)}
+.card{background:var(--card);border:1px solid var(--bd);border-left:5px solid var(--done);border-radius:8px;padding:12px;margin-bottom:10px}
+.card.new{border-left-color:var(--new)}.card.preparing{border-left-color:var(--prep)}.card.ready{border-left-color:var(--rdy)}.card.done{opacity:.6}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.card ul{margin:8px 0;padding-left:18px}
+small,.mu{color:var(--mu)}
+.btns{display:flex;gap:6px;flex-wrap:wrap}
+.btns button.on{background:var(--ac);color:var(--on);border-color:var(--ac)}
+.login{max-width:340px;margin:12vh auto;display:grid;gap:10px}
+#err{color:var(--new);min-height:1.3em}
+h2{font-size:16px;margin:18px 0 6px}
+.item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--bd)}
+.item.off b{text-decoration:line-through;color:var(--mu)}
+.add{display:grid;grid-template-columns:1fr 1fr 90px auto;gap:8px;margin-bottom:8px}
+@media(max-width:560px){.add{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div id="login" class="login hide">
+  <h1>La Ville Cafe: owner login</h1>
+  <form id="lf" style="display:grid;gap:10px">
+    <input id="em" type="email" placeholder="Email" autocomplete="username" required>
+    <input id="pw" type="password" placeholder="Password" autocomplete="current-password" required>
+    <button class="p" type="submit">Log in</button>
+  </form>
+  <div id="err" role="alert"></div>
+</div>
+
+<div id="app" class="hide">
+  <div class="top">
+    <h1>La Ville Cafe</h1>
+    <div class="btns"><button id="snd">Turn on sound</button><button id="out">Log out</button></div>
+  </div>
+  <div class="tabs"><button id="t1" class="on">Orders</button><button id="t2">Menu</button></div>
+  <div id="orders"></div>
+  <div id="menu" class="hide">
+    <div id="imp" class="hide card"><b>Menu is empty.</b> <button id="impb" class="p">Import current menu</button></div>
+    <div class="add">
+      <input id="mc" list="cats" placeholder="Category"><datalist id="cats"></datalist>
+      <input id="mn" placeholder="Dish name">
+      <input id="mp" type="number" min="0" placeholder="Price">
+      <button id="ma" class="p">Add dish</button>
+    </div>
+    <div id="mlist"></div>
+  </div>
+</div>
+
+</div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,collection,doc,getDoc,setDoc,updateDoc,deleteDoc,onSnapshot,query,orderBy,limit,writeBatch} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const app=initializeApp({
+  apiKey:"AIzaSyBahzJEMucesxnuctvcjTJVh1AVnxgp19Q",
+  authDomain:"lavillecafe-9.firebaseapp.com",
+  projectId:"lavillecafe-9",
+  storageBucket:"lavillecafe-9.firebasestorage.app",
+  messagingSenderId:"795947465420",
+  appId:"1:795947465420:web:53299fdfd9d2d93d896069"
+});
+const auth=getAuth(app),db=getFirestore(app);
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const slug=n=>n.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+const show=w=>{$("#login").classList.toggle("hide",w!=="login");$("#app").classList.toggle("hide",w!=="app")};
+
+const SEED="Starters|Cheese Balls:180,Chilly Garlic Pops:180;Pizza|Margarita Pizza:210,Italian Pizza:260,Mexican Pizza:270,Tandoori Paneer Pizza:310,Farm House Pizza:360;Pasta|Penne Arabiata Pasta:210,Creamy Cheese Burst:235,Fusion Pasta:235,Tomato Tangy Pasta:210,Pesto Pasta:245;Sandwich|Veg Sandwich:160,Veg Cheese Sandwich:190,Chilly Garlic Sandwich:190,Mexican Sandwich:210,Tandoori Paneer Sandwich:230;Burger|Veg Burger:125,Veg Cheese Burger:160,Tandoori Paneer Burger:195;Garlic Bread|Garlic Bread:200,Peri Peri Garlic Bread:210,Tandoori Garlic Bread:220,Tandoori Peri Peri Garlic Bread:230,Tandoori Paneer Garlic Bread:255,Mayo Peri Peri Garlic Bread:230,Mexican Garlic Bread:230,Mexican Peri Peri Garlic Bread:240;Fries|Salted Classic:135,Peri Peri Fries:160,Mexican Fries:170,Mexican Peri Peri:185,Mayo Fries:160,Butter Garlic Fries:160,Tandoori Fries:175,Tandoori Peri Peri:185,Mayo Peri Peri Fries:175;Maggi|Maggi Classic:100,Classic (Extra Masala):110,Cheese Masala:155,Chilly Garlic Maggi:145,Butter Masala Maggi:135,Indian Tadka Maggi:145,Peri Peri Maggi:125,Schezwan Maggi:125,Tandoori Maggi:145,Veg Masala Maggi:145,Lemon Butter Maggi:125;Nachos|Nachos Platter:240,Mexican Nachos:270,Tandoori Nachos:260;Rice|Mexican Rice:220,Burn to Hell Rice:220,Schezwan Rice:220,Veg Fried Rice:175,Hyderabadi Biryani:220;Sizzlers|Italian Sizzler:420,Mexican Sizzler:430;Hot Cup Fun|Hot Chocolate:150,Hot Bournvita:100,Hot Coffee Plain:70,Hot Hazelnut:160;Cold Coffee|Cold Coffee:135,Mocha:185,Kitkat Coffee:160,Thick Coffee:220,Oreo Coffee:160,Hazelnut Coffee:245,Choco Frappe:220,Cold Bournvita:120,Cold Coffee with Topping:160,Cold Coffee with Icecream:180;Milkshakes|Chocolate Milkshake:170,Butter Scotch:170,Strawberry Milkshake:170,Very Berry Milkshake:185,Vanilla Milkshake:160,Black Currant Milkshake:170,Mango Milkshake:170;Thick Shakes|Black Currant Thickshake:245,Oreo Thickshake:245,Brownie Thickshake:245,Kitkat Thickshake:245;Mojitos|Lemon Mint Mojito:125,Blue Berry Mojito:155,Green Apple Mojito:145,Watermelon Mojito:145,Very Berry Mojito:155,Black Currant Mojito:145,Strawberry Mojito:145,Orange Mojito:145,Kiwi Mojito:155;Mocktails|Blue Lagoon:230,Cranberry Spritzer:230;Desserts|Vanilla Icecream:0,Chocolate Icecream:0,Brownie:0,Brownie with Icecream:0;Beverages|Cold Drink:60,Red Bull:70,Coolberg:165";
+
+let unsubs=[],first=true,soundOn=false,ctx=null;
+
+$("#lf").onsubmit=async e=>{
+  e.preventDefault();$("#err").textContent="";
+  try{await signInWithEmailAndPassword(auth,$("#em").value.trim(),$("#pw").value);$("#pw").value=""}
+  catch(x){$("#err").textContent="Wrong email or password."}
+};
+$("#out").onclick=()=>signOut(auth);
+
+onAuthStateChanged(auth,async u=>{
+  unsubs.forEach(f=>f());unsubs=[];
+  if(!u){show("login");return}
+  try{
+    const s=await getDoc(doc(db,"users",u.uid));
+    if(!s.exists()||s.data().role!=="admin"){await signOut(auth);$("#err").textContent="This account is not an admin.";return}
+  }catch(x){await signOut(auth);$("#err").textContent="Could not check admin access. Check Firestore rules.";return}
+  show("app");start();
+});
+
+$("#t1").onclick=()=>tab(1);$("#t2").onclick=()=>tab(2);
+function tab(n){
+  $("#orders").classList.toggle("hide",n!==1);$("#menu").classList.toggle("hide",n!==2);
+  $("#t1").classList.toggle("on",n===1);$("#t2").classList.toggle("on",n===2);
+}
+$("#snd").onclick=()=>{soundOn=true;ctx=ctx||new AudioContext();beep();$("#snd").textContent="Sound is on"};
+function beep(){
+  if(!soundOn||!ctx)return;
+  const o=ctx.createOscillator(),g=ctx.createGain();
+  o.connect(g);g.connect(ctx.destination);o.frequency.value=880;g.gain.value=.2;
+  o.start();o.stop(ctx.currentTime+.4);
+}
+
+function start(){
+  first=true;
+  unsubs.push(onSnapshot(query(collection(db,"orders"),orderBy("createdAt","desc"),limit(100)),snap=>{
+    snap.docChanges().forEach(c=>{if(!first&&c.type==="added"&&c.doc.data().status==="new")beep()});
+    first=false;
+    $("#orders").innerHTML=snap.empty?'<p class="mu">No orders yet.</p>':snap.docs.map(d=>{
+      const o=d.data();
+      const t=o.createdAt?.toDate?o.createdAt.toDate().toLocaleString("en-IN",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}):"";
+      return `<div class="card ${esc(o.status)}"><div class="row"><b>${esc(o.name)}</b><span class="mu">${esc(o.type||"")}${o.table?", table "+esc(o.table):""}</span><small>${t}</small></div>
+      <ul>${(o.items||[]).map(i=>`<li>${esc(i.qty)} x ${esc(i.name)}</li>`).join("")}</ul>
+      <div class="row"><b>Rs ${esc(o.total)}</b><span class="btns">${["new","preparing","ready","done"].map(s=>`<button data-id="${d.id}" data-s="${s}" class="${o.status===s?"on":""}">${s}</button>`).join("")}</span></div></div>`;
+    }).join("");
+  },err=>{$("#orders").innerHTML='<p class="mu">Could not load orders: '+esc(err.code)+'</p>'}));
+
+  unsubs.push(onSnapshot(collection(db,"menu"),snap=>{
+    const items=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.sort||0)-(b.sort||0));
+    $("#imp").classList.toggle("hide",!snap.empty);
+    const cats=[];items.forEach(i=>{if(!cats.includes(i.category))cats.push(i.category)});
+    $("#cats").innerHTML=cats.map(c=>`<option value="${esc(c)}">`).join("");
+    $("#mlist").innerHTML=cats.map(c=>`<h2>${esc(c)}</h2>`+items.filter(i=>i.category===c).map(i=>`<div class="item ${i.available===false?"off":""}"><div><b>${esc(i.name)}</b> <span class="mu">${i.price?"Rs "+esc(i.price):"MRP"}</span></div><div class="btns"><button data-a="avail" data-id="${i.id}">${i.available===false?"Show":"Hide"}</button><button data-a="price" data-id="${i.id}">Price</button><button data-a="del" data-id="${i.id}">Delete</button></div></div>`).join("")).join("");
+    window._menu=items;
+  },err=>{$("#mlist").innerHTML='<p class="mu">Could not load menu: '+esc(err.code)+'</p>'}));
+}
+
+$("#orders").onclick=async e=>{
+  const b=e.target.closest("button[data-s]");if(!b)return;
+  try{await updateDoc(doc(db,"orders",b.dataset.id),{status:b.dataset.s})}catch(x){alert("Could not update: "+x.code)}
+};
+
+$("#mlist").onclick=async e=>{
+  const b=e.target.closest("button[data-a]");if(!b)return;
+  const id=b.dataset.id,it=(window._menu||[]).find(i=>i.id===id);if(!it)return;
+  try{
+    if(b.dataset.a==="del"){if(confirm("Delete "+it.name+"?"))await deleteDoc(doc(db,"menu",id))}
+    if(b.dataset.a==="avail")await updateDoc(doc(db,"menu",id),{available:it.available===false});
+    if(b.dataset.a==="price"){const p=prompt("New price for "+it.name,it.price||0);if(p!==null&&p!==""&&!isNaN(p))await updateDoc(doc(db,"menu",id),{price:Number(p)})}
+  }catch(x){alert("Could not save: "+x.code)}
+};
+
+$("#ma").onclick=async()=>{
+  const c=$("#mc").value.trim(),n=$("#mn").value.trim(),p=Number($("#mp").value);
+  if(!c||!n||isNaN(p)){alert("Fill category, name and price.");return}
+  try{
+    await setDoc(doc(db,"menu",slug(n)),{category:c,name:n,price:p,img:"images/"+slug(n)+".jpg",available:true,sort:Date.now()});
+    $("#mn").value="";$("#mp").value="";
+  }catch(x){alert("Could not add: "+x.code)}
+};
+
+$("#impb").onclick=async()=>{
+  const batch=writeBatch(db);let k=0;
+  SEED.split(";").forEach(g=>{
+    const [cat,list]=g.split("|");
+    list.split(",").forEach(x=>{
+      const i=x.lastIndexOf(":"),name=x.slice(0,i),price=Number(x.slice(i+1));
+      batch.set(doc(db,"menu",slug(name)),{category:cat,name,price,img:"images/"+slug(name)+".jpg",available:true,sort:++k});
+    });
+  });
+  try{await batch.commit()}catch(x){alert("Import failed: "+x.code)}
+};
+</script>
+</body>
+</html>
