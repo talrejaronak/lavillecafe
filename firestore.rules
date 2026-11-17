@@ -19,19 +19,16 @@ service cloud.firestore {
         && d.createdAt == request.time;
     }
 
-    // Menu: everyone can read, only admin can change
     match /menu/{id} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // Orders: customers can only create, admin does everything else
     match /orders/{id} {
       allow create: if validOrder();
       allow read, update, delete: if isAdmin();
     }
 
-    // Users: you can read only your own doc; created by hand in console
     match /users/{uid} {
       allow read: if request.auth != null && request.auth.uid == uid;
       allow write: if false;
