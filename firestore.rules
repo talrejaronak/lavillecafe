@@ -5,7 +5,7 @@ service cloud.firestore {
     // Only the cafe owner's login. Replace with the exact email you create in Firebase Authentication.
     function isOwner() {
       return request.auth != null
-          && request.auth.token.email == "OWNER_EMAIL_HERE";
+          && request.auth.token.email == "talrejaronak0@gmail.com";
     }
 
     // What a customer is allowed to submit.
