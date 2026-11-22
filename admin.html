@@ -1,188 +1,300 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>La Ville Cafe Admin</title>
+<title>La Ville Cafe — Orders</title>
 <style>
-:root{--bg:#f1f4f2;--card:#fff;--tx:#17231d;--mu:#5f6f66;--ac:#1f4d3a;--on:#fff;--bd:#d7dfda;--new:#c2410c;--prep:#a16207;--rdy:#1d6fb8;--done:#6b7a72}
-@media(prefers-color-scheme:dark){:root{--bg:#0f1512;--card:#18211c;--tx:#e8f0ec;--mu:#9baba2;--ac:#7cc4a0;--on:#0f1512;--bd:#2b3a32;--new:#fb923c;--prep:#facc15;--rdy:#60a5fa;--done:#8a9a91}}
-*{box-sizing:border-box}
-body{margin:0;font:15px/1.4 system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
-.wrap{max-width:760px;margin:0 auto;padding:14px}
-h1{font-size:20px;margin:0}
-input,button,select{font:inherit;color:inherit}
-input{width:100%;padding:11px;border:1px solid var(--bd);border-radius:8px;background:var(--card)}
-button{padding:9px 13px;border:1px solid var(--bd);border-radius:8px;background:var(--card);cursor:pointer}
-button.p{background:var(--ac);color:var(--on);border-color:var(--ac)}
-button:focus-visible,input:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
-.hide{display:none!important}
-.top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}
-.tabs{display:flex;gap:8px;margin-bottom:12px}
-.tabs button.on{background:var(--ac);color:var(--on);border-color:var(--ac)}
-.card{background:var(--card);border:1px solid var(--bd);border-left:5px solid var(--done);border-radius:8px;padding:12px;margin-bottom:10px}
-.card.new{border-left-color:var(--new)}.card.preparing{border-left-color:var(--prep)}.card.ready{border-left-color:var(--rdy)}.card.done{opacity:.6}
-.row{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
-.card ul{margin:8px 0;padding-left:18px}
-small,.mu{color:var(--mu)}
-.btns{display:flex;gap:6px;flex-wrap:wrap}
-.btns button.on{background:var(--ac);color:var(--on);border-color:var(--ac)}
-.login{max-width:340px;margin:12vh auto;display:grid;gap:10px}
-#err{color:var(--new);min-height:1.3em}
-h2{font-size:16px;margin:18px 0 6px}
-.item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--bd)}
-.item.off b{text-decoration:line-through;color:var(--mu)}
-.add{display:grid;grid-template-columns:1fr 1fr 90px auto;gap:8px;margin-bottom:8px}
-@media(max-width:560px){.add{grid-template-columns:1fr 1fr}}
+  :root{
+    --espresso:#3B2116; --brown:#6B3E26; --gold:#C58B45; --cream:#FFF8EE;
+    --ink:#24150F; --soft:#765F54; --line:#EDE0CF; --success:#28734A; --error:#A33A3A;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--cream); color:var(--ink);}
+  button{font-family:inherit; cursor:pointer;}
+  [hidden]{display:none !important;}
+
+  /* ---------- login ---------- */
+  .login{max-width:360px; margin:12vh auto 0; padding:0 20px;}
+  .login-card{background:#fff; border:1px solid var(--line); border-radius:16px; padding:24px; box-shadow:0 10px 30px rgba(59,33,22,0.08);}
+  .login h1{margin:0 0 4px; font-size:1.3rem; color:var(--espresso);}
+  .login p{margin:0 0 18px; color:var(--soft); font-size:0.85rem;}
+  .field{margin-bottom:12px;}
+  .field label{display:block; font-size:0.78rem; font-weight:600; margin-bottom:5px;}
+  .field input{width:100%; padding:12px; border:1.5px solid var(--line); border-radius:10px; font-size:1rem; background:#fff; color:var(--ink);}
+  .btn{width:100%; padding:13px; border:none; border-radius:10px; background:var(--espresso); color:#fff; font-weight:700; font-size:0.95rem;}
+  .btn:disabled{opacity:0.55;}
+  .msg-error{color:var(--error); font-size:0.82rem; margin:10px 0 0; min-height:1.2em;}
+
+  /* ---------- app ---------- */
+  header{position:sticky; top:0; z-index:10; background:var(--espresso); color:var(--cream); padding:12px 16px;}
+  .bar{max-width:760px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;}
+  .bar h1{margin:0; font-size:1.05rem;}
+  .bar-actions{display:flex; gap:8px;}
+  .chip-btn{border:1px solid rgba(255,248,238,0.4); background:transparent; color:var(--cream); border-radius:999px; padding:8px 14px; font-size:0.8rem; font-weight:600;}
+  .chip-btn.on{background:var(--gold); border-color:var(--gold); color:var(--ink);}
+
+  main{max-width:760px; margin:0 auto; padding:14px 14px 60px;}
+  .filters{display:flex; gap:8px; margin-bottom:14px;}
+  .filter{border:1.5px solid var(--line); background:#fff; color:var(--ink); border-radius:999px; padding:8px 16px; font-size:0.85rem; font-weight:600;}
+  .filter.active{background:var(--espresso); border-color:var(--espresso); color:var(--cream);}
+  .banner{background:#fff; border:1px solid var(--line); border-radius:12px; padding:12px 14px; font-size:0.85rem; color:var(--soft); margin-bottom:14px;}
+  .banner.error{color:var(--error); border-color:var(--error);}
+  .empty{text-align:center; color:var(--soft); padding:50px 10px;}
+
+  .order{background:#fff; border:1px solid var(--line); border-left:6px solid var(--gold); border-radius:14px; padding:14px; margin-bottom:12px; box-shadow:0 4px 14px rgba(59,33,22,0.06);}
+  .order.s-new{border-left-color:var(--gold);}
+  .order.s-preparing{border-left-color:var(--brown);}
+  .order.s-ready{border-left-color:var(--success);}
+  .order.s-done{border-left-color:#b9b0a6; opacity:0.7;}
+  .order.fresh{animation:fresh 1.2s ease 4;}
+  @keyframes fresh{0%,100%{box-shadow:0 4px 14px rgba(59,33,22,0.06);} 50%{box-shadow:0 0 0 4px rgba(197,139,69,0.55);}}
+
+  .o-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
+  .o-id{font-weight:800; font-size:1.05rem;}
+  .o-where{display:inline-block; margin-top:4px; background:var(--cream); border:1px solid var(--line); border-radius:999px; padding:3px 10px; font-size:0.78rem; font-weight:700;}
+  .o-time{font-size:0.78rem; color:var(--soft); text-align:right; white-space:nowrap;}
+  .o-cust{margin:10px 0 6px; font-size:0.92rem;}
+  .o-cust a{color:var(--brown); font-weight:600;}
+  .o-items{margin:0 0 8px; padding-left:18px; font-size:0.95rem; line-height:1.5;}
+  .o-notes{background:#fff6e0; border:1px dashed var(--gold); border-radius:8px; padding:7px 10px; font-size:0.82rem; margin-bottom:8px;}
+  .o-foot{display:flex; justify-content:space-between; align-items:center; font-size:0.82rem; color:var(--soft); margin-bottom:10px;}
+  .o-total{font-weight:800; font-size:1.05rem; color:var(--espresso);}
+
+  .statuses{display:grid; grid-template-columns:repeat(4,1fr); gap:6px;}
+  .st{padding:10px 4px; border:1.5px solid var(--line); background:#fff; border-radius:9px; font-size:0.78rem; font-weight:700; color:var(--ink);}
+  .st.active.new{background:var(--gold); border-color:var(--gold);}
+  .st.active.preparing{background:var(--brown); border-color:var(--brown); color:#fff;}
+  .st.active.ready{background:var(--success); border-color:var(--success); color:#fff;}
+  .st.active.done{background:#6e665f; border-color:#6e665f; color:#fff;}
 </style>
 </head>
 <body>
-<div class="wrap">
 
-<div id="login" class="login hide">
-  <h1>La Ville Cafe: owner login</h1>
-  <form id="lf" style="display:grid;gap:10px">
-    <input id="em" type="email" placeholder="Email" autocomplete="username" required>
-    <input id="pw" type="password" placeholder="Password" autocomplete="current-password" required>
-    <button class="p" type="submit">Log in</button>
-  </form>
-  <div id="err" role="alert"></div>
-</div>
-
-<div id="app" class="hide">
-  <div class="top">
+<!-- ============ LOGIN ============ -->
+<section id="loginView" class="login">
+  <div class="login-card">
     <h1>La Ville Cafe</h1>
-    <div class="btns"><button id="snd">Turn on sound</button><button id="out">Log out</button></div>
+    <p>Owner login — orders dashboard</p>
+    <form id="loginForm">
+      <div class="field"><label for="email">Email</label><input id="email" type="email" autocomplete="username" required></div>
+      <div class="field"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required></div>
+      <button class="btn" id="loginBtn" type="submit">Log in</button>
+      <p class="msg-error" id="loginError" role="alert"></p>
+    </form>
   </div>
-  <div class="tabs"><button id="t1" class="on">Orders</button><button id="t2">Menu</button></div>
-  <div id="orders"></div>
-  <div id="menu" class="hide">
-    <div id="imp" class="hide card"><b>Menu is empty.</b> <button id="impb" class="p">Import current menu</button></div>
-    <div class="add">
-      <input id="mc" list="cats" placeholder="Category"><datalist id="cats"></datalist>
-      <input id="mn" placeholder="Dish name">
-      <input id="mp" type="number" min="0" placeholder="Price">
-      <button id="ma" class="p">Add dish</button>
-    </div>
-    <div id="mlist"></div>
-  </div>
-</div>
+</section>
 
+<!-- ============ DASHBOARD ============ -->
+<div id="appView" hidden>
+  <header>
+    <div class="bar">
+      <h1>Orders</h1>
+      <div class="bar-actions">
+        <button class="chip-btn" id="soundBtn">▶ Start alerts</button>
+        <button class="chip-btn" id="logoutBtn">Log out</button>
+      </div>
+    </div>
+  </header>
+  <main>
+    <div class="filters">
+      <button class="filter active" id="fActive">Active</button>
+      <button class="filter" id="fAll">All</button>
+    </div>
+    <div id="banner" class="banner" hidden></div>
+    <div id="list"></div>
+  </main>
 </div>
 
 <script type="module">
-import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {getFirestore,collection,doc,getDoc,setDoc,updateDoc,deleteDoc,onSnapshot,query,orderBy,limit,writeBatch} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+  import { getFirestore, collection, query, orderBy, limit, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
-const app=initializeApp({
-  apiKey:"AIzaSyBahzJEMucesxnuctvcjTJVh1AVnxgp19Q",
-  authDomain:"lavillecafe-9.firebaseapp.com",
-  projectId:"lavillecafe-9",
-  storageBucket:"lavillecafe-9.firebasestorage.app",
-  messagingSenderId:"795947465420",
-  appId:"1:795947465420:web:53299fdfd9d2d93d896069"
-});
-const auth=getAuth(app),db=getFirestore(app);
-const $=s=>document.querySelector(s);
-const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const slug=n=>n.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
-const show=w=>{$("#login").classList.toggle("hide",w!=="login");$("#app").classList.toggle("hide",w!=="app")};
+  // PASTE YOUR FIREBASE WEB CONFIG HERE (same as in menu.html)
+  const firebaseConfig = {
+    apiKey: "AIzaSyBahzJEMucesxnuctvcjTJVh1AVnxgp19Q",
+    authDomain: "lavillecafe-9.firebaseapp.com",
+    projectId: "lavillecafe-9",
+    storageBucket: "lavillecafe-9.firebasestorage.app",
+    messagingSenderId: "795947465420",
+    appId: "1:795947465420:web:53299fdfd9d2d93d896069"
+  };
 
-const SEED="Starters|Cheese Balls:180,Chilly Garlic Pops:180;Pizza|Margarita Pizza:210,Italian Pizza:260,Mexican Pizza:270,Tandoori Paneer Pizza:310,Farm House Pizza:360;Pasta|Penne Arabiata Pasta:210,Creamy Cheese Burst:235,Fusion Pasta:235,Tomato Tangy Pasta:210,Pesto Pasta:245;Sandwich|Veg Sandwich:160,Veg Cheese Sandwich:190,Chilly Garlic Sandwich:190,Mexican Sandwich:210,Tandoori Paneer Sandwich:230;Burger|Veg Burger:125,Veg Cheese Burger:160,Tandoori Paneer Burger:195;Garlic Bread|Garlic Bread:200,Peri Peri Garlic Bread:210,Tandoori Garlic Bread:220,Tandoori Peri Peri Garlic Bread:230,Tandoori Paneer Garlic Bread:255,Mayo Peri Peri Garlic Bread:230,Mexican Garlic Bread:230,Mexican Peri Peri Garlic Bread:240;Fries|Salted Classic:135,Peri Peri Fries:160,Mexican Fries:170,Mexican Peri Peri:185,Mayo Fries:160,Butter Garlic Fries:160,Tandoori Fries:175,Tandoori Peri Peri:185,Mayo Peri Peri Fries:175;Maggi|Maggi Classic:100,Classic (Extra Masala):110,Cheese Masala:155,Chilly Garlic Maggi:145,Butter Masala Maggi:135,Indian Tadka Maggi:145,Peri Peri Maggi:125,Schezwan Maggi:125,Tandoori Maggi:145,Veg Masala Maggi:145,Lemon Butter Maggi:125;Nachos|Nachos Platter:240,Mexican Nachos:270,Tandoori Nachos:260;Rice|Mexican Rice:220,Burn to Hell Rice:220,Schezwan Rice:220,Veg Fried Rice:175,Hyderabadi Biryani:220;Sizzlers|Italian Sizzler:420,Mexican Sizzler:430;Hot Cup Fun|Hot Chocolate:150,Hot Bournvita:100,Hot Coffee Plain:70,Hot Hazelnut:160;Cold Coffee|Cold Coffee:135,Mocha:185,Kitkat Coffee:160,Thick Coffee:220,Oreo Coffee:160,Hazelnut Coffee:245,Choco Frappe:220,Cold Bournvita:120,Cold Coffee with Topping:160,Cold Coffee with Icecream:180;Milkshakes|Chocolate Milkshake:170,Butter Scotch:170,Strawberry Milkshake:170,Very Berry Milkshake:185,Vanilla Milkshake:160,Black Currant Milkshake:170,Mango Milkshake:170;Thick Shakes|Black Currant Thickshake:245,Oreo Thickshake:245,Brownie Thickshake:245,Kitkat Thickshake:245;Mojitos|Lemon Mint Mojito:125,Blue Berry Mojito:155,Green Apple Mojito:145,Watermelon Mojito:145,Very Berry Mojito:155,Black Currant Mojito:145,Strawberry Mojito:145,Orange Mojito:145,Kiwi Mojito:155;Mocktails|Blue Lagoon:230,Cranberry Spritzer:230;Desserts|Vanilla Icecream:0,Chocolate Icecream:0,Brownie:0,Brownie with Icecream:0;Beverages|Cold Drink:60,Red Bull:70,Coolberg:165";
+  const STATUSES = [["new","New"],["preparing","Preparing"],["ready","Ready"],["done","Done"]];
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const rupee = (n) => "₹" + Number(n || 0).toLocaleString("en-IN");
 
-let unsubs=[],first=true,soundOn=false,ctx=null;
+  const configured = !Object.values(firebaseConfig).some(v => String(v).startsWith("PASTE_"));
+  if(!configured){
+    $("loginError").textContent = "Firebase config is not set in admin.html yet.";
+    $("loginBtn").disabled = true;
+  }
 
-$("#lf").onsubmit=async e=>{
-  e.preventDefault();$("#err").textContent="";
-  try{await signInWithEmailAndPassword(auth,$("#em").value.trim(),$("#pw").value);$("#pw").value=""}
-  catch(x){$("#err").textContent="Wrong email or password."}
-};
-$("#out").onclick=()=>signOut(auth);
+  let auth, db, unsub = null;
+  let orders = [], filter = "active", firstLoad = true;
+  const fresh = new Set();
 
-onAuthStateChanged(auth,async u=>{
-  unsubs.forEach(f=>f());unsubs=[];
-  if(!u){show("login");return}
-  try{
-    const s=await getDoc(doc(db,"users",u.uid));
-    if(!s.exists()||s.data().role!=="admin"){await signOut(auth);$("#err").textContent="This account is not an admin.";return}
-  }catch(x){await signOut(auth);$("#err").textContent="Could not check admin access. Check Firestore rules.";return}
-  show("app");start();
-});
+  /* ---------- sound + keep-awake ---------- */
+  let audioCtx = null, soundOn = false, wakeLock = null;
 
-$("#t1").onclick=()=>tab(1);$("#t2").onclick=()=>tab(2);
-function tab(n){
-  $("#orders").classList.toggle("hide",n!==1);$("#menu").classList.toggle("hide",n!==2);
-  $("#t1").classList.toggle("on",n===1);$("#t2").classList.toggle("on",n===2);
-}
-$("#snd").onclick=()=>{soundOn=true;ctx=ctx||new AudioContext();beep();$("#snd").textContent="Sound is on"};
-function beep(){
-  if(!soundOn||!ctx)return;
-  const o=ctx.createOscillator(),g=ctx.createGain();
-  o.connect(g);g.connect(ctx.destination);o.frequency.value=880;g.gain.value=.2;
-  o.start();o.stop(ctx.currentTime+.4);
-}
-
-function start(){
-  first=true;
-  unsubs.push(onSnapshot(query(collection(db,"orders"),orderBy("createdAt","desc"),limit(100)),snap=>{
-    snap.docChanges().forEach(c=>{if(!first&&c.type==="added"&&c.doc.data().status==="new")beep()});
-    first=false;
-    $("#orders").innerHTML=snap.empty?'<p class="mu">No orders yet.</p>':snap.docs.map(d=>{
-      const o=d.data();
-      const t=o.createdAt?.toDate?o.createdAt.toDate().toLocaleString("en-IN",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}):"";
-      return `<div class="card ${esc(o.status)}"><div class="row"><b>${esc(o.name)}</b><span class="mu">${esc(o.type||"")}${o.table?", table "+esc(o.table):""}</span><small>${t}</small></div>
-      <ul>${(o.items||[]).map(i=>`<li>${esc(i.qty)} x ${esc(i.name)}</li>`).join("")}</ul>
-      <div class="row"><b>Rs ${esc(o.total)}</b><span class="btns">${["new","preparing","ready","done"].map(s=>`<button data-id="${d.id}" data-s="${s}" class="${o.status===s?"on":""}">${s}</button>`).join("")}</span></div></div>`;
-    }).join("");
-  },err=>{$("#orders").innerHTML='<p class="mu">Could not load orders: '+esc(err.code)+'</p>'}));
-
-  unsubs.push(onSnapshot(collection(db,"menu"),snap=>{
-    const items=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.sort||0)-(b.sort||0));
-    $("#imp").classList.toggle("hide",!snap.empty);
-    const cats=[];items.forEach(i=>{if(!cats.includes(i.category))cats.push(i.category)});
-    $("#cats").innerHTML=cats.map(c=>`<option value="${esc(c)}">`).join("");
-    $("#mlist").innerHTML=cats.map(c=>`<h2>${esc(c)}</h2>`+items.filter(i=>i.category===c).map(i=>`<div class="item ${i.available===false?"off":""}"><div><b>${esc(i.name)}</b> <span class="mu">${i.price?"Rs "+esc(i.price):"MRP"}</span></div><div class="btns"><button data-a="avail" data-id="${i.id}">${i.available===false?"Show":"Hide"}</button><button data-a="price" data-id="${i.id}">Price</button><button data-a="del" data-id="${i.id}">Delete</button></div></div>`).join("")).join("");
-    window._menu=items;
-  },err=>{$("#mlist").innerHTML='<p class="mu">Could not load menu: '+esc(err.code)+'</p>'}));
-}
-
-$("#orders").onclick=async e=>{
-  const b=e.target.closest("button[data-s]");if(!b)return;
-  try{await updateDoc(doc(db,"orders",b.dataset.id),{status:b.dataset.s})}catch(x){alert("Could not update: "+x.code)}
-};
-
-$("#mlist").onclick=async e=>{
-  const b=e.target.closest("button[data-a]");if(!b)return;
-  const id=b.dataset.id,it=(window._menu||[]).find(i=>i.id===id);if(!it)return;
-  try{
-    if(b.dataset.a==="del"){if(confirm("Delete "+it.name+"?"))await deleteDoc(doc(db,"menu",id))}
-    if(b.dataset.a==="avail")await updateDoc(doc(db,"menu",id),{available:it.available===false});
-    if(b.dataset.a==="price"){const p=prompt("New price for "+it.name,it.price||0);if(p!==null&&p!==""&&!isNaN(p))await updateDoc(doc(db,"menu",id),{price:Number(p)})}
-  }catch(x){alert("Could not save: "+x.code)}
-};
-
-$("#ma").onclick=async()=>{
-  const c=$("#mc").value.trim(),n=$("#mn").value.trim(),p=Number($("#mp").value);
-  if(!c||!n||isNaN(p)){alert("Fill category, name and price.");return}
-  try{
-    await setDoc(doc(db,"menu",slug(n)),{category:c,name:n,price:p,img:"images/"+slug(n)+".jpg",available:true,sort:Date.now()});
-    $("#mn").value="";$("#mp").value="";
-  }catch(x){alert("Could not add: "+x.code)}
-};
-
-$("#impb").onclick=async()=>{
-  const batch=writeBatch(db);let k=0;
-  SEED.split(";").forEach(g=>{
-    const [cat,list]=g.split("|");
-    list.split(",").forEach(x=>{
-      const i=x.lastIndexOf(":"),name=x.slice(0,i),price=Number(x.slice(i+1));
-      batch.set(doc(db,"menu",slug(name)),{category:cat,name,price,img:"images/"+slug(name)+".jpg",available:true,sort:++k});
+  function beep(){
+    if(!soundOn || !audioCtx) return;
+    if(audioCtx.state === "suspended") audioCtx.resume();
+    const t0 = audioCtx.currentTime;
+    [0, 0.25, 0.5].forEach((off, i) => {
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.type = "sine"; o.frequency.value = i % 2 ? 1100 : 880;
+      g.gain.setValueAtTime(0.0001, t0 + off);
+      g.gain.exponentialRampToValueAtTime(0.4, t0 + off + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + off + 0.2);
+      o.connect(g).connect(audioCtx.destination);
+      o.start(t0 + off); o.stop(t0 + off + 0.22);
     });
+  }
+
+  async function holdScreenAwake(){
+    try{ if("wakeLock" in navigator) wakeLock = await navigator.wakeLock.request("screen"); }catch(e){}
+  }
+  document.addEventListener("visibilitychange", () => {
+    if(soundOn && document.visibilityState === "visible") holdScreenAwake();
   });
-  try{await batch.commit()}catch(x){alert("Import failed: "+x.code)}
-};
+
+  $("soundBtn").addEventListener("click", () => {
+    if(!soundOn){
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      soundOn = true;
+      $("soundBtn").textContent = "🔔 Alerts on";
+      $("soundBtn").classList.add("on");
+      beep();               // test beep — also unlocks audio on this browser
+      holdScreenAwake();
+    } else {
+      soundOn = false;
+      $("soundBtn").textContent = "▶ Start alerts";
+      $("soundBtn").classList.remove("on");
+      if(wakeLock){ wakeLock.release().catch(()=>{}); wakeLock = null; }
+    }
+  });
+
+  /* ---------- render ---------- */
+  function fmtTime(d){
+    if(!d) return "just now";
+    const t = d.toLocaleTimeString([], {hour:"numeric", minute:"2-digit"});
+    return d.toDateString() === new Date().toDateString()
+      ? t : d.toLocaleDateString([], {day:"numeric", month:"short"}) + ", " + t;
+  }
+
+  function card(o){
+    const d = o.createdAt && o.createdAt.toDate ? o.createdAt.toDate() : null;
+    const where = o.orderType === "dine-in" ? "Table " + esc(o.tableNumber || "?") : "Takeaway";
+    const items = (o.items || []).map(i => `<li><b>${esc(i.qty)}×</b> ${esc(i.name)}</li>`).join("");
+    const st = o.status || "new";
+    return `
+      <article class="order s-${esc(st)}${fresh.has(o.id) ? " fresh" : ""}">
+        <div class="o-top">
+          <div><div class="o-id">#${esc(o.orderId)}</div><span class="o-where">${where}</span></div>
+          <div class="o-time">${esc(fmtTime(d))}</div>
+        </div>
+        <div class="o-cust">${esc(o.customerName)} · <a href="tel:${esc(o.mobile)}">${esc(o.mobile)}</a></div>
+        <ul class="o-items">${items}</ul>
+        ${o.notes ? `<div class="o-notes">📝 ${esc(o.notes)}</div>` : ""}
+        <div class="o-foot"><span>${esc(o.paymentMethod)} · ${esc(o.paymentStatus)}</span><span class="o-total">${rupee(o.grandTotal)}</span></div>
+        <div class="statuses">
+          ${STATUSES.map(([v, label]) =>
+            `<button class="st ${v}${st === v ? " active" : ""}" data-id="${esc(o.id)}" data-status="${v}">${label}</button>`).join("")}
+        </div>
+      </article>`;
+  }
+
+  function render(){
+    const active = orders.filter(o => o.status !== "done");
+    const shown = filter === "active" ? active : orders;
+    $("fActive").textContent = `Active (${active.length})`;
+    $("list").innerHTML = shown.length ? shown.map(card).join("")
+      : `<p class="empty">${filter === "active" ? "No active orders right now." : "No orders yet."}</p>`;
+  }
+
+  $("fActive").addEventListener("click", () => { filter = "active"; $("fActive").classList.add("active"); $("fAll").classList.remove("active"); render(); });
+  $("fAll").addEventListener("click", () => { filter = "all"; $("fAll").classList.add("active"); $("fActive").classList.remove("active"); render(); });
+
+  $("list").addEventListener("click", async (e) => {
+    const b = e.target.closest("button.st");
+    if(!b) return;
+    b.disabled = true;
+    try{
+      await updateDoc(doc(db, "orders", b.dataset.id), { status: b.dataset.status });
+    }catch(err){
+      console.error(err);
+      alert("Could not update status. Check your connection and try again.");
+    }
+    b.disabled = false;
+  });
+
+  /* ---------- live orders ---------- */
+  function showBanner(msg, isError){
+    $("banner").textContent = msg; $("banner").hidden = !msg;
+    $("banner").classList.toggle("error", !!isError);
+  }
+
+  function subscribe(){
+    firstLoad = true;
+    const q = query(collection(db, "orders"), orderBy("createdAt", "desc"), limit(100));
+    unsub = onSnapshot(q, (snap) => {
+      showBanner("");
+      let added = 0;
+      if(!firstLoad){
+        snap.docChanges().forEach(c => { if(c.type === "added"){ added++; fresh.add(c.doc.id); } });
+      }
+      firstLoad = false;
+      orders = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      render();
+      if(added){
+        beep();
+        if(navigator.vibrate) navigator.vibrate([200, 100, 200]);
+        setTimeout(() => { fresh.clear(); render(); }, 5500);
+      }
+    }, (err) => {
+      console.error(err);
+      showBanner(err.code === "permission-denied"
+        ? "This account is not allowed to view orders. Log in with the owner email."
+        : "Connection problem — retrying…", true);
+    });
+  }
+
+  /* ---------- auth ---------- */
+  if(configured){
+    auth = getAuth(initializeApp(firebaseConfig));
+    db = getFirestore(auth.app);
+
+    onAuthStateChanged(auth, (user) => {
+      if(user){
+        $("loginView").hidden = true; $("appView").hidden = false;
+        if(!unsub) subscribe();
+      } else {
+        if(unsub){ unsub(); unsub = null; }
+        orders = []; $("appView").hidden = true; $("loginView").hidden = false;
+      }
+    });
+
+    $("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      $("loginError").textContent = ""; $("loginBtn").disabled = true;
+      try{
+        await signInWithEmailAndPassword(auth, $("email").value.trim(), $("password").value);
+      }catch(err){
+        const wrong = ["auth/invalid-credential","auth/wrong-password","auth/user-not-found","auth/invalid-email"];
+        $("loginError").textContent = wrong.includes(err.code)
+          ? "Wrong email or password."
+          : err.code === "auth/too-many-requests" ? "Too many attempts. Try again in a few minutes."
+          : "Could not log in. Check your connection.";
+      }
+      $("loginBtn").disabled = false;
+    });
+
+    $("logoutBtn").addEventListener("click", () => signOut(auth));
+  }
 </script>
 </body>
 </html>
