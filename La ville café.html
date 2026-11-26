@@ -3,11 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" type="image/png" href="images/logo.png">
-<link rel="apple-touch-icon" href="images/logo.png">
 <title>La Ville Cafe — Menu</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Manrope:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --ink:#24150F;        /* Dark Espresso — main text */
@@ -734,193 +732,28 @@
   footer{border-top:1px solid #eadbc8;}
   @media(max-width:700px){.hero{min-height:330px;padding:42px 20px 40px}.hero h1{font-size:2.55rem}.hero-photo{width:68px;height:68px}.hero-3d{right:0;top:17%;transform:scale(.7);}.coffee-spill::before{left:90%;}.coffee-spill::after{left:90%;}.main{padding-inline:16px}main{padding-inline:16px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.card-media{height:132px}.card-body{padding:12px}.card-name{font-size:0.96rem}.card-description{font-size:0.7rem}.nav{padding-inline:16px}.section-3d-divider{height:70px;}}
   @media(max-width:430px){.grid{grid-template-columns:1fr 1fr}.card-media{height:118px}.card-price{font-size:0.82rem}.add-btn{font-size:0.72rem;padding:8px 10px;}}
-
-  /* ---------- ORDER TRACKER (customer) ---------- */
-  .track{margin:14px 0 4px; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px;}
-  .track-steps{display:flex; gap:6px; margin-bottom:10px;}
-  .track-step{flex:1; text-align:center; font-size:0.7rem; font-weight:600; color:var(--ink-soft);}
-  .track-step::before{content:""; display:block; height:5px; border-radius:3px; background:var(--line); margin-bottom:6px;}
-  .track-step.passed::before{background:var(--success);}
-  .track-step.current::before{background:var(--gold);}
-  .track-step.current{color:var(--ink); font-weight:800;}
-  .track-msg{font-size:0.88rem; font-weight:600; color:var(--olive-deep); text-align:center;}
-  .track-chip{
-    position:fixed; left:12px; right:12px; bottom:calc(14px + env(safe-area-inset-bottom, 0px)); z-index:39;
-    background:var(--panel); color:var(--olive-deep); border:1.5px solid var(--gold); border-radius:999px;
-    padding:11px 16px; font-weight:700; font-size:0.84rem; font-family:'Manrope',sans-serif;
-    box-shadow:0 8px 22px rgba(59,33,22,0.18);
-  }
-  .cart-bar.visible + .track-chip{bottom:calc(78px + env(safe-area-inset-bottom, 0px));}
-
-  /* ================= REDESIGN: hero / marquee / favourites / find us ================= */
-  .mono{font-family:'DM Mono',ui-monospace,monospace; font-size:0.68rem; letter-spacing:0.16em; text-transform:uppercase;}
-  .dot{display:inline-block; width:7px; height:7px; border-radius:50%; background:#b9782c; margin-right:6px; vertical-align:middle;}
-  .dot.on{background:#3fbf7f; box-shadow:0 0 0 3px rgba(63,191,127,0.22);}
-  .dot.off{background:#a33a3a;}
-  .sec-title{font-family:'Fraunces',serif; font-weight:500; font-size:clamp(1.9rem,6vw,2.7rem); line-height:1.08; color:#2a160d; margin:6px 0 14px;}
-  .sec-title em{color:#b9782c; font-style:italic;}
-  .sec-label{color:#b9782c; margin:0;}
-
-  .hero2{background:radial-gradient(120% 90% at 85% 8%, #4d2c1c 0%, #2a160d 55%, #1c0e08 100%); color:#fff8ee; padding:0 0 56px; overflow:hidden;}
-  .hero2-wrap{max-width:1180px; margin:0 auto; padding:14px 22px 0;}
-  .pill-head{display:flex; align-items:center; gap:10px; background:rgba(255,248,238,0.93); color:#2a160d; border-radius:999px; padding:8px 8px 8px 10px; box-shadow:0 8px 24px rgba(0,0,0,0.25);}
-  .pill-logo{width:34px; height:34px; border-radius:11px; background:#b9782c; color:#fff; display:flex; align-items:center; justify-content:center;}
-  .pill-logo svg{width:18px; height:18px;}
-  .pill-name{font-family:'Fraunces',serif; font-weight:600; font-size:1.05rem;}
-  .pill-name em{font-weight:400;}
-  .pill-cart{margin-left:auto; display:flex; align-items:center; gap:7px; background:#2a160d; color:#fff; border:none; border-radius:999px; padding:9px 15px; font-family:'Manrope',sans-serif; font-weight:800; font-size:0.85rem;}
-  .pill-cart svg{width:16px; height:16px;}
-  .hero2-grid{margin-top:38px;}
-  .hero2-eyebrow{color:#d99b5a; margin:0 0 18px;}
-  .hero2-title{font-family:'Fraunces',serif; font-weight:500; font-size:clamp(2.9rem,12vw,5.2rem); line-height:1.0; letter-spacing:-0.02em; color:#fff; margin:0;}
-  .hero2-title em{font-style:italic; color:#e0a35c;}
-  .hero2-sub{max-width:420px; margin:20px 0 0; line-height:1.6; color:#eadccb; font-size:0.98rem;}
-  .hero2-cta{display:flex; flex-wrap:wrap; gap:12px; margin-top:26px;}
-  .hero2 .hero-cta{margin:0; display:inline-flex; align-items:center; gap:10px; background:#b9782c; color:#fff; border:none; border-radius:999px; padding:14px 22px; font-weight:700; font-size:0.95rem; box-shadow:0 10px 24px rgba(185,120,44,0.35);}
-  .hero2 .hero-cta:hover{background:#a76a24; color:#fff; transform:translateY(-2px);}
-  .hero2 .hero-cta .arrow{display:inline-flex; width:24px; height:24px; border-radius:50%; background:#fff; color:#b9782c; align-items:center; justify-content:center;}
-  .hero2-ghost{display:inline-flex; align-items:center; padding:14px 22px; border-radius:999px; border:1.5px solid rgba(255,248,238,0.4); color:#fff8ee; text-decoration:none; font-weight:600; font-size:0.95rem;}
-  .hero2-stats{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:36px; padding-top:22px; border-top:1px solid rgba(255,248,238,0.16);}
-  .hero2-stats b{display:block; font-family:'Fraunces',serif; font-weight:500; font-size:1.35rem; color:#fff;}
-  .hero2-stats span{display:block; margin-top:4px; font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; color:#cdb9a3; line-height:1.4;}
-  .hero2-art{position:relative; max-width:330px; margin:44px auto 0;}
-  .arch{border-radius:999px 999px 20px 20px; overflow:hidden; background:linear-gradient(160deg,#6b3e26,#2a160d);}
-  .arch img{display:block; width:100%; height:100%; object-fit:cover;}
-  .arch-wall{aspect-ratio:0.81; box-shadow:0 24px 50px rgba(0,0,0,0.45);}
-  .spin-badge{position:absolute; left:-20px; bottom:46px; width:98px; height:98px;}
-  .spin-badge svg{width:100%; height:100%; animation:badgeSpin 20s linear infinite;}
-  .badge-star{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.5rem;}
-  @keyframes badgeSpin{to{transform:rotate(360deg);}}
-  .hero2-caption{margin:16px 0 0; text-align:center; color:#cdb9a3; font-size:0.6rem;}
-  .hero2-eyebrow,.hero2-title,.hero2-sub,.hero2-cta{animation:heroRise 0.8s cubic-bezier(.2,.7,.2,1) both;}
-  .hero2-title{animation-delay:.08s;} .hero2-sub{animation-delay:.16s;} .hero2-cta{animation-delay:.24s;}
-  @keyframes heroRise{from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:none;}}
-  @media(min-width:900px){
-    .hero2-grid{display:grid; grid-template-columns:1.15fr 0.85fr; gap:56px; align-items:center; margin-top:56px;}
-    .hero2-art{margin:0 0 0 auto;}
-  }
-
-  .marquee{background:#f5e8d6; border-top:1px solid #eadbc8; border-bottom:1px solid #eadbc8; overflow:hidden; white-space:nowrap; padding:14px 0;}
-  .marquee-track{display:inline-flex; align-items:center; gap:24px; animation:marq 34s linear infinite; will-change:transform;}
-  .marquee-track span,.marquee-track em{font-family:'Fraunces',serif; font-size:1.55rem; color:#2a160d;}
-  .marquee-track em{font-style:italic; color:#9a8472;}
-  .marquee-track i{display:inline-block; width:15px; height:22px; border:2px solid #b9782c; border-bottom:none; border-radius:15px 15px 0 0;}
-  @keyframes marq{to{transform:translateX(-50%);}}
-
-  section.favs{padding:48px 0 8px; max-width:1180px; margin:0 auto; scroll-margin-top:76px;}
-  section.favs .sec-label,section.favs .sec-title{padding:0 22px;}
-  .fav-row{display:flex; gap:14px; overflow-x:auto; scroll-snap-type:x mandatory; padding:6px 22px 22px; scrollbar-width:none;}
-  .fav-row::-webkit-scrollbar{display:none;}
-  .fav-card{position:relative; flex:0 0 76%; max-width:300px; aspect-ratio:0.78; border-radius:24px; overflow:hidden; scroll-snap-align:start; background:linear-gradient(160deg,#6b3e26,#2a160d); color:#fff; box-shadow:0 14px 30px rgba(59,33,22,0.22);}
-  .fav-card .card-media{position:absolute; inset:0; width:100%; height:100%; border-radius:0; background:none; transform:none;}
-  .fav-card .card-media img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
-  .fav-shade{position:absolute; inset:0; background:linear-gradient(180deg,rgba(28,14,8,0) 38%,rgba(28,14,8,0.88) 100%); pointer-events:none;}
-  .fav-chip{position:absolute; top:14px; left:14px; z-index:3; background:rgba(255,248,238,0.94); color:#2a160d; border-radius:999px; padding:5px 11px; font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase;}
-  .fav-info{position:absolute; left:16px; right:16px; bottom:16px; z-index:3; display:flex; align-items:flex-end; justify-content:space-between; gap:10px;}
-  .fav-info h3{margin:0; font-family:'Fraunces',serif; font-weight:500; font-size:1.35rem; line-height:1.1; color:#fff;}
-  .fav-price{display:block; margin-top:5px; font-weight:800; font-size:0.95rem; color:#f0c47d;}
-  .fav-add{border:none; border-radius:999px; background:#fff8ee; color:#2a160d; font-weight:800; font-size:0.85rem; padding:11px 16px; font-family:'Manrope',sans-serif; flex:0 0 auto;}
-  .fav-add:active{transform:scale(0.94);}
-  @media(min-width:900px){.fav-card{flex-basis:260px;}}
-
-  .menu-head{max-width:1180px; margin:0 auto; padding:30px 22px 6px;}
-  .menu-note{margin:0; max-width:420px; color:#6b5a4d; font-size:0.92rem; line-height:1.55;}
-
-  section.findus{background:#1c0e08; color:#fff8ee; padding:60px max(22px, calc((100% - 1180px)/2)) 70px; margin-top:30px;}
-  section.findus .sec-title{color:#fff;}
-  .find-grid{display:grid; gap:34px; margin-top:20px;}
-  .info-block{margin-bottom:22px;}
-  .info-block .mono{color:#a99682; display:block; margin-bottom:8px;}
-  .info-block p{margin:0 0 4px; font-size:1.02rem; line-height:1.6; color:#fff8ee;}
-  .open-now{color:#d6e9dd; font-family:'DM Mono',monospace; font-size:0.72rem !important; letter-spacing:0.12em; text-transform:uppercase;}
-  .find-btns{display:flex; flex-wrap:wrap; gap:12px; margin-top:6px;}
-  .btn-solid,.btn-outline{display:inline-flex; align-items:center; gap:8px; padding:14px 22px; border-radius:999px; font-weight:700; font-size:0.95rem; text-decoration:none;}
-  .btn-solid{background:#b9782c; color:#fff; box-shadow:0 10px 24px rgba(185,120,44,0.3);}
-  .btn-outline{border:1.5px solid rgba(255,248,238,0.4); color:#fff8ee;}
-  .find-art{display:flex; gap:14px; align-items:flex-end;}
-  .arch-front{flex:0 0 62%; aspect-ratio:0.68;}
-  .arch-inside{flex:1; aspect-ratio:0.68; margin-bottom:-26px;}
-  @media(min-width:900px){ .find-grid{grid-template-columns:1fr 1fr; align-items:center;} }
-
-  @media (prefers-reduced-motion: reduce){
-    .marquee-track,.spin-badge svg,.hero2-eyebrow,.hero2-title,.hero2-sub,.hero2-cta{animation:none !important;}
-  }
-
-  .arch-front{aspect-ratio:0.74;}
-  .arch-front img{object-position:42% 50%;}
-  .arch-inside img{object-position:50% 38%;}
-  .arch-wall img{object-position:50% 30%;}
-
-  .nav-wrap{transition:transform 0.3s ease, opacity 0.3s ease;}
-  .nav-wrap.nav-hidden{transform:translateY(-110%); opacity:0; pointer-events:none;}
-
-  .pill-logo{background:none !important; width:38px; height:38px; border-radius:50%; overflow:hidden; flex:0 0 auto;}
-  .pill-logo img{display:block; width:100%; height:100%; object-fit:cover;}
-  .footer-logo{display:block; width:60px; height:60px; margin:0 auto 10px; border-radius:50%;}
 </style>
 </head>
 <body>
 
-<!-- REDESIGN: hero. CONFIRM before launch: rating, hours and price-per-person in .hero2-stats -->
-<div class="hero2">
-  <div class="hero2-wrap">
-    <div class="pill-head">
-      <span class="pill-logo"><img src="images/logo.png" alt="La Ville Cafe logo" width="38" height="38"></span>
-      <span class="pill-name">La Ville <em>Cafe</em></span>
-      <button class="pill-cart" id="pillCart" type="button" aria-label="Open your cart">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 12H6L5 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
-        <b id="pillCartCount">0</b>
-      </button>
-    </div>
-    <div class="hero2-grid">
-      <div class="hero2-text">
-        <p class="mono hero2-eyebrow"><i class="dot on"></i> Abbas Tyabji Rd &middot; Fatehgunj &middot; Vadodara</p>
-        <h1 class="hero2-title">Brick walls,<br>good vibes,<br><em>big plates.</em></h1>
-        <p class="hero2-sub">The La Ville Cafe menu, right on your phone. Pick your plates, place the order, pay at the counter.</p>
-        <div class="hero2-cta">
-          <a class="hero-cta" href="#starters">Order from the menu <span class="arrow" aria-hidden="true">&darr;</span></a>
-          <a class="hero2-ghost" href="https://www.google.com/maps/search/?api=1&query=La+Ville+Cafe+Fatehgunj+Vadodara" target="_blank" rel="noopener">Directions</a>
-        </div>
-        <div class="hero2-stats">
-          <div><b>4.6 &#9733;</b><span>Google &middot; 500+ reviews</span></div>
-          <div><b>11&ndash;11</b><span>Open every day</span></div>
-          <div><b>&#8377;200&ndash;400</b><span>Typical per person</span></div>
-        </div>
-      </div>
-      <div class="hero2-art">
-        <div class="arch arch-wall"><img src="images/cafe-wall.jpg" alt="Brick wall with hanging lamps and framed black-and-white photos at La Ville Cafe" loading="eager" onerror="this.style.display='none'"></div>
-        <div class="spin-badge" aria-hidden="true">
-          <svg viewBox="0 0 120 120"><defs><path id="badgeCircle" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0"/></defs>
-            <circle cx="60" cy="60" r="59" fill="#B9782C"/>
-            <text font-size="9" fill="#FFF8EE" font-family="DM Mono, monospace"><textPath href="#badgeCircle" textLength="270" lengthAdjust="spacing">GOOD VIBES &#183; LA VILLE CAFE &#183; </textPath></text>
-          </svg>
-          <span class="badge-star">&#9733;</span>
-        </div>
-        <p class="mono hero2-caption">The good vibes wall</p>
-      </div>
-    </div>
-  </div>
+<div class="hero">
+  <div class="hero-3d" aria-hidden="true"></div>
+  <img class="hero-photo" src="https://cdn.21st.dev/assets/mirror/a1/a1faddabc2da5d4216759258797329cac7e26bf3e204f9205cf79f4fb6c090db.jpg" alt="Iced coffee at La Ville Cafe" loading="eager">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9h12v5a5 5 0 0 1-5 5H11a5 5 0 0 1-5-5V9z"/><path d="M18 10h1.5a2.5 2.5 0 0 1 0 5H18"/><path d="M8 3c0 1-1 1-1 2s1 1 1 2"/><path d="M12 3c0 1-1 1-1 2s1 1 1 2"/></svg>
+  <h1>La Ville Cafe</h1>
+  <p>European-inspired comfort food, poured coffee, and long-table moments in Fatehgunj.</p>
+  <div class="hero-meta" aria-label="Cafe details"><span>&#9733; 4.8</span><span>Vegetarian kitchen</span><span>Fatehgunj, Vadodara</span></div>
+  <a class="hero-cta" href="#starters">Explore Menu <span aria-hidden="true">&#8595;</span></a>
 </div>
 
 <div class="coffee-spill" aria-hidden="true"></div>
 
-<div class="marquee" aria-hidden="true">
-  <div class="marquee-track">
-    <span>Cheesy pizza</span><i></i><em>Thick shakes</em><i></i><span>Loaded fries</span><i></i><em>Garlic bread</em><i></i><span>Mojitos</span><i></i><em>Maggi</em><i></i><span>Nachos</span><i></i><em>Cold coffee</em><i></i>
-    <span>Cheesy pizza</span><i></i><em>Thick shakes</em><i></i><span>Loaded fries</span><i></i><em>Garlic bread</em><i></i><span>Mojitos</span><i></i><em>Maggi</em><i></i><span>Nachos</span><i></i><em>Cold coffee</em><i></i>
+<div class="about-strip">
+  <p class="about-text">A cozy, European-inspired cafe in Fatehgunj serving a fully vegetarian menu of pizzas, burgers, shakes and more — a favourite spot for casual hangouts and celebrations.</p>
+  <div class="about-meta">
+    <span>⭐ 4.5 (476+ reviews)</span>
+    <a href="https://www.google.com/maps/search/?api=1&query=La+Ville+Cafe+Sainath+Avenue+Fatehgunj+Vadodara" target="_blank">📍 102, Sainath Avenue, Fatehgunj, Vadodara</a>
   </div>
-</div>
-
-<section class="favs" id="favs">
-  <p class="mono sec-label">01 &mdash; Guest favourites</p>
-  <h2 class="sec-title">What everyone <em>orders.</em></h2>
-  <div class="fav-row" id="favRow"></div>
-</section>
-
-<div class="menu-head">
-  <p class="mono sec-label">02 &mdash; The menu</p>
-  <h2 class="sec-title">Made for <em>sharing.</em></h2>
-  <p class="menu-note">All vegetarian. Add what you like, then place your order &mdash; pay at the counter.</p>
 </div>
 
 <div class="gallery-wrap" hidden>
@@ -1960,31 +1793,11 @@
 
 </main>
 
-<section class="findus" id="find-us">
-  <p class="mono sec-label">03 &mdash; Find us</p>
-  <h2 class="sec-title">Find us in <em>Fatehgunj.</em></h2>
-  <div class="find-grid">
-    <div class="find-info">
-      <div class="info-block"><span class="mono">Address</span><p>Abbas Tyabji Rd, near Methodist Church,<br>Jayesh Colony, Fatehgunj,<br>Vadodara, Gujarat 390008</p></div>
-      <div class="info-block"><span class="mono">Hours</span><p>Every day &middot; 11 AM &ndash; 11 PM</p><p class="open-now" id="openNow"></p></div>
-      <div class="find-btns">
-        <a class="btn-solid" href="https://www.google.com/maps/search/?api=1&query=La+Ville+Cafe+Fatehgunj+Vadodara" target="_blank" rel="noopener">Get directions &nearr;</a>
-        <a class="btn-outline" href="tel:+917600031580">&#128222; +91 76000 31580</a>
-      </div>
-    </div>
-    <div class="find-art">
-      <div class="arch arch-front"><img src="images/cafe-books.jpg" alt="Brick wall with a lantern, bookshelf and window at La Ville Cafe" loading="lazy" onerror="this.style.display='none'"></div>
-      <div class="arch arch-inside"><img src="images/cafe-seating.jpg" alt="Window seating with a vintage gramophone at La Ville Cafe" loading="lazy" onerror="this.style.display='none'"></div>
-    </div>
-  </div>
-</section>
-
 <footer>
-  <img class="footer-logo" src="images/logo.png" alt="La Ville Cafe logo" width="60" height="60">
   <div class="name">La Ville Cafe</div>
   <div>📍 Call to order: <a href="tel:+917600031580">76000 31580</a></div>
   <div style="margin-top:4px;">Instagram: <a href="https://www.instagram.com/la_ville_cafe?stkn=MWtsdXBjOHp5cmw5OA==" target="_blank" rel="noopener">@la_ville_cafe</a></div>
-  <div style="margin-top:4px;"><a href="https://www.google.com/maps/search/?api=1&query=La+Ville+Cafe+Fatehgunj+Vadodara" target="_blank">Abbas Tyabji Rd, near Methodist Church, Fatehgunj, Vadodara — Get Directions</a></div>
+  <div style="margin-top:4px;"><a href="https://www.google.com/maps/search/?api=1&query=La+Ville+Cafe+Sainath+Avenue+Fatehgunj+Vadodara" target="_blank">102, Sainath Avenue, Fatehgunj, Vadodara — Get Directions</a></div>
 </footer>
 
 <button id="cartFab" class="cart-bar" hidden>
@@ -1992,7 +1805,6 @@
   <span id="cartFabTotal" class="cart-bar-total">₹0</span>
   <span class="cart-bar-view">View Cart →</span>
 </button>
-<button id="trackChip" class="track-chip" type="button" hidden></button>
 
 <div id="cartOverlay" class="cart-overlay" hidden></div>
 <div id="cartDrawer" class="cart-drawer">
@@ -2009,10 +1821,6 @@
     <div class="cart-subtotal-row">
       <span>Subtotal</span>
       <span id="cartSubtotal">₹0</span>
-    </div>
-    <div class="cart-subtotal-row">
-      <span>GST (18%)</span>
-      <span id="cartTax">₹0</span>
     </div>
     <div class="cart-total-row">
       <span>Total</span>
@@ -2272,15 +2080,14 @@
 
   function addToCart(id){
     const cardBeforeUpdate = document.querySelector(`.card[data-id="${id}"]`);
-    const srcCard = window.__addSource || null;
-    const addButton = (srcCard || cardBeforeUpdate)?.querySelector("[data-add]");
+    const addButton = cardBeforeUpdate?.querySelector("[data-add]");
     const addButtonRect = addButton?.getBoundingClientRect();
     const metaBeforeUpdate = itemMeta(id);
     cart[id] = (cart[id]||0)+1;
     saveCart();
     refreshCardAction(id);
     renderCart();
-    const card = srcCard || document.querySelector(`.card[data-id="${id}"]`);
+    const card = document.querySelector(`.card[data-id="${id}"]`);
     if(card){
       card.classList.add("just-added");
       setTimeout(() => card.classList.remove("just-added"), 420);
@@ -2328,9 +2135,7 @@
     const fab = document.getElementById("cartFab");
     const count = cartCount();
     document.getElementById("cartFabCount").textContent = count + (count === 1 ? " Item" : " Items");
-    const pillCount = document.getElementById("pillCartCount"); if(pillCount) pillCount.textContent = count;
-    const fabSub = cartTotal();
-    document.getElementById("cartFabTotal").textContent = formatRupee(fabSub + Math.round(fabSub * TAX_RATE));
+    document.getElementById("cartFabTotal").textContent = formatRupee(cartTotal());
     if(count > 0){ fab.hidden = false; requestAnimationFrame(()=>fab.classList.add("visible")); }
     else{ fab.classList.remove("visible"); }
 
@@ -2356,10 +2161,8 @@
       </div>`;
     }).join("");
     const subtotal = cartTotal();
-    const cartTax = Math.round(subtotal * TAX_RATE);
     document.getElementById("cartSubtotal").textContent = formatRupee(subtotal);
-    document.getElementById("cartTax").textContent = formatRupee(cartTax);
-    document.getElementById("cartTotalAmount").textContent = formatRupee(subtotal + cartTax);
+    document.getElementById("cartTotalAmount").textContent = formatRupee(subtotal);
   }
 
   function clearCart(){
@@ -2378,56 +2181,11 @@
     const incId = e.target.closest("[data-inc]")?.dataset.inc;
     const decId = e.target.closest("[data-dec]")?.dataset.dec;
     const removeId = e.target.closest("[data-remove]")?.dataset.remove;
-    if(addId){ window.__addSource = e.target.closest(".fav-card"); addToCart(addId); window.__addSource = null; }
+    if(addId) addToCart(addId);
     if(incId) incCart(incId);
     if(decId) decCart(decId);
     if(removeId) removeFromCart(removeId);
   });
-
-  /* ---- REDESIGN: guest favourites, pill cart button, "open now" ---- */
-  (function(){
-    const row = document.getElementById("favRow");
-    if(row){
-      const allCards = Array.from(document.querySelectorAll(".card"));
-      BESTSELLER_NAMES.forEach(name => {
-        const card = allCards.find(c => c.dataset.name === name);
-        if(!card) return;
-        const img = card.querySelector(".card-media img");
-        const src = img ? img.getAttribute("src") : "";
-        const el = document.createElement("article");
-        el.className = "fav-card";
-        el.dataset.cat = card.dataset.cat; el.dataset.name = name; el.dataset.id = card.dataset.id;
-        el.innerHTML =
-          '<div class="card-media">' + (src ? '<img src="' + src + '" alt="' + name + '" loading="lazy" onerror="this.style.display=\'none\'">' : '') + '</div>' +
-          '<div class="fav-shade"></div>' +
-          '<span class="fav-chip">Guest favourite</span>' +
-          '<div class="fav-info"><div><h3>' + name + '</h3><span class="fav-price">' + formatRupee(parseInt(card.dataset.price, 10)) + '</span></div>' +
-          '<button class="fav-add" type="button" data-add="' + card.dataset.id + '">+ Add</button></div>';
-        row.appendChild(el);
-      });
-      if(!row.children.length) document.getElementById("favs").hidden = true;
-    }
-
-    const findUs = document.getElementById("find-us"), navWrapEl = document.querySelector(".nav-wrap");
-    if(findUs && navWrapEl && "IntersectionObserver" in window){
-      new IntersectionObserver((entries) => {
-        entries.forEach(en => navWrapEl.classList.toggle("nav-hidden", en.isIntersecting));
-      }, { threshold: 0, rootMargin: "-80px 0px 0px 0px" }).observe(findUs);
-    }
-
-    const pill = document.getElementById("pillCart");
-    if(pill) pill.addEventListener("click", openCart);
-
-    const openEl = document.getElementById("openNow");
-    function paintOpen(){
-      if(!openEl) return;
-      const h = Number(new Intl.DateTimeFormat("en-GB", { hour:"numeric", hourCycle:"h23", timeZone:"Asia/Kolkata" }).format(new Date()));
-      openEl.innerHTML = (h >= 11 && h < 23)
-        ? '<i class="dot on"></i> Open now'
-        : '<i class="dot off"></i> Closed now &middot; opens 11 AM';
-    }
-    paintOpen(); setInterval(paintOpen, 60000);
-  })();
 
   document.getElementById("cartFab").addEventListener("click", openCart);
   document.getElementById("cartClose").addEventListener("click", closeCart);
@@ -2448,7 +2206,7 @@
      ============================================================ */
   const UPI_ID = "";               // e.g. "lavillecafe@okaxis" — leave blank to hide UPI option
   const CAFE_PHONE_TEL = "+917600031580";
-  const TAX_RATE = 0.18; // 18% GST
+  const TAX_RATE = 0;
 
   let checkout = { type:null, name:"", mobile:"", table:"", payment:null, instructions:"" };
 
@@ -2624,7 +2382,6 @@
         Payment: ${checkout.payment === "online" ? "Pay Online (UPI)" : "Pay at Counter"}
         ${checkout.instructions ? `<br>Note: ${checkout.instructions}` : ""}
       </div>
-      <div class="co-error" id="coPlaceErr" role="alert"></div>
       <button class="co-btn" id="placeOrderBtn" style="background:var(--checkout-cta);">Place Order</button>
       <button class="co-btn secondary" id="backToPaymentBtn">Back</button>
     `);
@@ -2633,24 +2390,7 @@
   }
 
   /* ---------- PLACE ORDER + CONFIRMATION ---------- */
-  async function placeOrder(){
-    const btn = document.getElementById("placeOrderBtn");
-    const errEl = document.getElementById("coPlaceErr");
-    const showErr = (msg) => {
-      errEl.textContent = msg; errEl.style.display = "block";
-      btn.disabled = false; btn.textContent = "Place Order";
-    };
-    errEl.style.display = "none";
-
-    if(typeof window.saveOrderToFirestore !== "function"){
-      showErr("Online ordering is unavailable right now. Please order at the counter.");
-      return;
-    }
-    if(!navigator.onLine){
-      showErr("No internet connection. Please reconnect and try again.");
-      return;
-    }
-
+  function placeOrder(){
     const subtotal = cartTotal();
     const tax = Math.round(subtotal * TAX_RATE);
     const total = subtotal + tax;
@@ -2673,31 +2413,6 @@
       specialInstructions: checkout.instructions || "",
       dateTime: new Date().toISOString()
     };
-
-    // Save to Firestore first — "Order Confirmed" only shows once it is really saved.
-    btn.disabled = true; btn.textContent = "Placing order…";
-    const slowHint = setTimeout(() => { btn.textContent = "Still trying… keep this page open"; }, 10000);
-    try{
-      order.fid = await window.saveOrderToFirestore({
-        orderId: order.orderId,
-        customerName: order.customerName,
-        mobile: order.mobile,
-        orderType: order.orderType,
-        tableNumber: order.tableNumber,
-        items: order.items,
-        subtotal, tax, discount: 0, grandTotal: total,
-        paymentMethod: order.paymentMethod,
-        paymentStatus: order.paymentStatus,
-        notes: order.specialInstructions
-      });
-    }catch(e){
-      console.error("Order save failed:", e);
-      clearTimeout(slowHint);
-      showErr("Could not place your order. Please try again.");
-      return;
-    }
-    clearTimeout(slowHint);
-
     saveOrder(order);
 
     // clear cart
@@ -2740,72 +2455,6 @@
     return lines.join("\n");
   }
 
-  /* ---------- LIVE ORDER TRACKING (customer side) ---------- */
-  const TRACK_STEPS = [["new","Received"],["preparing","Preparing"],["ready","Ready"],["done","Done"]];
-  let trackOrderData = null, trackStatus = null, trackUnsub = null;
-
-  function trackMessage(status, o){
-    if(status === "cancelled") return "❌ This order was cancelled. Please contact the cafe on 76000 31580.";
-    if(status === "preparing") return "👨‍🍳 Your order is being prepared.";
-    if(status === "ready") return o.orderType === "dine-in"
-      ? `✅ Your order is ready! It will be served at Table ${o.tableNumber}.`
-      : "✅ Your order is ready! Please collect it at the counter.";
-    if(status === "done") return "Thank you for visiting La Ville Cafe! ☕";
-    return "⏳ Order received. The cafe will start on it shortly.";
-  }
-
-  function paintTracker(){
-    const o = trackOrderData; if(!o) return;
-    const status = trackStatus || "new";
-    const cancelled = status === "cancelled";
-    const idx = cancelled ? -1 : Math.max(0, TRACK_STEPS.findIndex(s => s[0] === status));
-    const box = document.getElementById("trackBox");
-    if(box){
-      box.innerHTML = `
-        <div class="track-steps">
-          ${TRACK_STEPS.map((st, i) => `<div class="track-step${i < idx ? " passed" : ""}${i === idx ? " current" : ""}">${st[1]}</div>`).join("")}
-        </div>
-        <div class="track-msg">${trackMessage(status, o)}</div>`;
-    }
-    const chip = document.getElementById("trackChip");
-    if(chip){
-      if(status === "done" || cancelled){ chip.hidden = true; }
-      else {
-        chip.hidden = false;
-        chip.textContent = `🧾 Order #${o.orderId} · ${TRACK_STEPS[idx][1]} →`;
-      }
-    }
-  }
-
-  function trackOrder(order){
-    if(trackUnsub){ trackUnsub(); trackUnsub = null; }
-    trackOrderData = order; trackStatus = "new";
-    if(!order || !order.fid || typeof window.watchOrderStatus !== "function"){
-      const box = document.getElementById("trackBox"); if(box) box.style.display = "none";
-      return;
-    }
-    paintTracker();
-    trackUnsub = window.watchOrderStatus(order.fid, (status) => {
-      if(status === null) return;
-      trackStatus = status;
-      paintTracker();
-    }, () => {});
-  }
-
-  // If the customer reloads the menu while an order is active, show the "track" chip again.
-  function resumeTracking(){
-    const last = getLastOrder();
-    if(!last || !last.fid) return;
-    if(Date.now() - new Date(last.dateTime).getTime() > 12*60*60*1000) return;
-    trackOrder(last);
-  }
-  window.addEventListener("load", resumeTracking);
-  document.addEventListener("click", (e) => {
-    if(e.target.closest("#trackChip") && trackOrderData){
-      openCheckout(); renderConfirmation(trackOrderData);
-    }
-  });
-
   function renderConfirmation(order){
     setTitle("");
     setBody(`
@@ -2815,10 +2464,7 @@
       <div class="co-summary-row"><span>Order Type</span><span>${order.orderType === "dine-in" ? "Dine-in" : "Takeaway"}</span></div>
       ${order.tableNumber ? `<div class="co-summary-row"><span>Table</span><span>${order.tableNumber}</span></div>` : ""}
       ${order.items.map(it => `<div class="co-summary-row"><span>${it.name} × ${it.qty}</span><span>${formatRupee(it.lineTotal)}</span></div>`).join("")}
-      <div class="co-summary-row"><span>Subtotal</span><span>${formatRupee(order.subtotal)}</span></div>
-      <div class="co-summary-row"><span>GST (18%)</span><span>${formatRupee(order.tax)}</span></div>
       <div class="co-summary-row total"><span>Total</span><span>${formatRupee(order.grandTotal)}</span></div>
-      <div class="track" id="trackBox"></div>
       <div class="co-note">
         Payment: ${order.paymentMethod} (${order.paymentStatus})
         ${order.specialInstructions ? `<br>Note: ${order.specialInstructions}` : ""}
@@ -2830,7 +2476,6 @@
         <button class="co-btn secondary" id="callCafeBtn">Call Cafe</button>
       </div>
     `);
-    trackOrder(order);
     document.getElementById("viewOrderBtn").addEventListener("click", () => {
       const last = getLastOrder();
       if(last) renderConfirmation(last);
@@ -3013,35 +2658,6 @@
       });
     }
   })();
-</script>
-
-
-<!-- ============ FIREBASE (orders) ============ -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-  import { getFirestore, collection, addDoc, serverTimestamp, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
-
-  // Public web config (not secret) — security comes from firestore.rules.
-  const firebaseConfig = {
-    apiKey: "AIzaSyBahzJEMucesxnuctvcjTJVh1AVnxgp19Q",
-    authDomain: "lavillecafe-9.firebaseapp.com",
-    projectId: "lavillecafe-9",
-    storageBucket: "lavillecafe-9.firebasestorage.app",
-    messagingSenderId: "795947465420",
-    appId: "1:795947465420:web:53299fdfd9d2d93d896069"
-  };
-
-  const db = getFirestore(initializeApp(firebaseConfig));
-  // Customers can only CREATE orders (enforced by firestore.rules).
-  window.saveOrderToFirestore = async (data) => {
-    const ref = await addDoc(collection(db, "orders"), { ...data, status: "new", createdAt: serverTimestamp() });
-    return ref.id;
-  };
-  // Live status of ONE order, by its private auto-ID (customers can read only their own link).
-  window.watchOrderStatus = (id, onStatus, onError) =>
-    onSnapshot(doc(db, "orders", id),
-      (snap) => onStatus(snap.exists() ? (snap.data().status || "new") : null),
-      (err) => { if(onError) onError(err); });
 </script>
 
 </body>
