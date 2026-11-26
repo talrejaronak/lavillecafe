@@ -2,15 +2,24 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>La Ville Cafe — Orders</title>
+<meta name="theme-color" content="#3B2116">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="LV Orders">
+<link rel="manifest" href="admin-manifest.json">
+<link rel="icon" href="admin-icon-192.png">
+<link rel="apple-touch-icon" href="admin-icon-192.png">
+<title>La Ville Cafe — Admin</title>
 <style>
   :root{
     --espresso:#3B2116; --brown:#6B3E26; --gold:#C58B45; --cream:#FFF8EE;
     --ink:#24150F; --soft:#765F54; --line:#EDE0CF; --success:#28734A; --error:#A33A3A;
   }
-  *{box-sizing:border-box;}
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html{overscroll-behavior-y:contain;}
   body{margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--cream); color:var(--ink);}
   button{font-family:inherit; cursor:pointer;}
   [hidden]{display:none !important;}
@@ -26,57 +35,101 @@
   .btn{width:100%; padding:13px; border:none; border-radius:10px; background:var(--espresso); color:#fff; font-weight:700; font-size:0.95rem;}
   .btn:disabled{opacity:0.55;}
   .msg-error{color:var(--error); font-size:0.82rem; margin:10px 0 0; min-height:1.2em;}
+  .empty{text-align:center; color:var(--soft); padding:50px 10px;}
 
-  /* ---------- app ---------- */
-  header{position:sticky; top:0; z-index:10; background:var(--espresso); color:var(--cream); padding:12px 16px;}
+  /* ---------- app shell ---------- */
+  header{position:sticky; top:0; z-index:15; background:var(--espresso); color:var(--cream); padding:calc(12px + env(safe-area-inset-top)) 16px 12px;}
   .bar{max-width:760px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;}
   .bar h1{margin:0; font-size:1.05rem;}
-  .bar-actions{display:flex; gap:8px;}
+  .bar-actions{display:flex; gap:8px; flex-wrap:wrap;}
   .chip-btn{border:1px solid rgba(255,248,238,0.4); background:transparent; color:var(--cream); border-radius:999px; padding:8px 14px; font-size:0.8rem; font-weight:600;}
   .chip-btn.on{background:var(--gold); border-color:var(--gold); color:var(--ink);}
 
-  main{max-width:760px; margin:0 auto; padding:14px 14px 60px;}
-  .filters{display:flex; gap:8px; margin-bottom:14px;}
-  .filter{border:1.5px solid var(--line); background:#fff; color:var(--ink); border-radius:999px; padding:8px 16px; font-size:0.85rem; font-weight:600;}
-  .filter.active{background:var(--espresso); border-color:var(--espresso); color:var(--cream);}
+  main{max-width:760px; margin:0 auto; padding:14px 14px calc(92px + env(safe-area-inset-bottom));}
   .banner{background:#fff; border:1px solid var(--line); border-radius:12px; padding:12px 14px; font-size:0.85rem; color:var(--soft); margin-bottom:14px;}
   .banner.error{color:var(--error); border-color:var(--error);}
-  .empty{text-align:center; color:var(--soft); padding:50px 10px;}
+  .summary{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;}
+  .pill{background:#fff; border:1px solid var(--line); border-radius:999px; padding:6px 12px; font-size:0.8rem; font-weight:700;}
+  .pill b{color:var(--espresso);}
+  .range{display:flex; gap:8px; margin-bottom:14px;}
+  .range button{border:1.5px solid var(--line); background:#fff; color:var(--ink); border-radius:999px; padding:8px 16px; font-size:0.85rem; font-weight:600;}
+  .range button.active{background:var(--espresso); border-color:var(--espresso); color:var(--cream);}
+  .search{width:100%; padding:12px 14px; border:1.5px solid var(--line); border-radius:12px; font-size:1rem; background:#fff; color:var(--ink); margin-bottom:12px;}
 
+  /* ---------- bottom tabs (app-like) ---------- */
+  .tabs{position:fixed; left:0; right:0; bottom:0; z-index:20; display:grid; grid-template-columns:repeat(3,1fr); background:#fff; border-top:1px solid var(--line); padding-bottom:env(safe-area-inset-bottom);}
+  .tab{position:relative; border:none; background:none; padding:10px 4px 9px; font-size:0.72rem; font-weight:700; color:var(--soft); display:flex; flex-direction:column; align-items:center; gap:2px;}
+  .tab .ico{font-size:1.25rem; line-height:1.2;}
+  .tab.active{color:var(--espresso);}
+  .tab.active::before{content:""; position:absolute; top:0; left:25%; right:25%; height:3px; background:var(--gold); border-radius:0 0 3px 3px;}
+  .badge{position:absolute; top:5px; left:calc(50% + 6px); background:var(--error); color:#fff; border-radius:999px; font-size:0.65rem; padding:1px 6px; font-weight:800;}
+
+  /* ---------- order cards ---------- */
   .order{background:#fff; border:1px solid var(--line); border-left:6px solid var(--gold); border-radius:14px; padding:14px; margin-bottom:12px; box-shadow:0 4px 14px rgba(59,33,22,0.06);}
   .order.s-new{border-left-color:var(--gold);}
   .order.s-preparing{border-left-color:var(--brown);}
   .order.s-ready{border-left-color:var(--success);}
-  .order.s-done{border-left-color:#b9b0a6; opacity:0.7;}
+  .order.s-done{border-left-color:#b9b0a6; opacity:0.75;}
+  .order.s-cancelled{border-left-color:var(--error); opacity:0.6;}
   .order.fresh{animation:fresh 1.2s ease 4;}
   @keyframes fresh{0%,100%{box-shadow:0 4px 14px rgba(59,33,22,0.06);} 50%{box-shadow:0 0 0 4px rgba(197,139,69,0.55);}}
-
   .o-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
   .o-id{font-weight:800; font-size:1.05rem;}
   .o-where{display:inline-block; margin-top:4px; background:var(--cream); border:1px solid var(--line); border-radius:999px; padding:3px 10px; font-size:0.78rem; font-weight:700;}
+  .ribbon{display:inline-block; margin-left:6px; background:var(--error); color:#fff; border-radius:6px; padding:2px 7px; font-size:0.68rem; font-weight:800;}
   .o-time{font-size:0.78rem; color:var(--soft); text-align:right; white-space:nowrap;}
   .o-cust{margin:10px 0 6px; font-size:0.92rem;}
   .o-cust a{color:var(--brown); font-weight:600;}
   .o-items{margin:0 0 8px; padding-left:18px; font-size:0.95rem; line-height:1.5;}
   .o-notes{background:#fff6e0; border:1px dashed var(--gold); border-radius:8px; padding:7px 10px; font-size:0.82rem; margin-bottom:8px;}
-  .o-foot{display:flex; justify-content:space-between; align-items:center; font-size:0.82rem; color:var(--soft); margin-bottom:10px;}
+  .o-foot{display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; font-size:0.8rem; color:var(--soft); margin-bottom:10px;}
   .o-total{font-weight:800; font-size:1.05rem; color:var(--espresso);}
-
+  .pay-badge{font-weight:800; font-size:0.7rem; border-radius:6px; padding:3px 8px; color:#fff;}
+  .pay-badge.paid{background:var(--success);} .pay-badge.pending{background:var(--gold); color:var(--ink);}
   .statuses{display:grid; grid-template-columns:repeat(4,1fr); gap:6px;}
   .st{padding:10px 4px; border:1.5px solid var(--line); background:#fff; border-radius:9px; font-size:0.78rem; font-weight:700; color:var(--ink);}
   .st.active.new{background:var(--gold); border-color:var(--gold);}
   .st.active.preparing{background:var(--brown); border-color:var(--brown); color:#fff;}
   .st.active.ready{background:var(--success); border-color:var(--success); color:#fff;}
   .st.active.done{background:#6e665f; border-color:#6e665f; color:#fff;}
+  .o-actions{display:flex; gap:8px; margin-top:8px;}
+  .act{flex:1; padding:9px 6px; border-radius:9px; border:1.5px solid var(--line); background:#fff; font-size:0.78rem; font-weight:700; color:var(--ink);}
+  .act.pay{border-color:var(--success); color:var(--success);}
+  .act.cancel{border-color:var(--error); color:var(--error);}
+
+  /* ---------- dashboard ---------- */
+  .kpis{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;}
+  .kpi{background:#fff; border:1px solid var(--line); border-radius:14px; padding:12px 14px;}
+  .kpi span{display:block; font-size:0.74rem; font-weight:600; color:var(--soft);}
+  .kpi b{display:block; font-size:1.35rem; margin-top:2px; color:var(--espresso);}
+  .kpi small{display:block; font-size:0.72rem; color:var(--soft); margin-top:2px;}
+  .kpi.big{grid-column:1 / -1; background:var(--espresso); border-color:var(--espresso);}
+  .kpi.big span,.kpi.big small{color:#e9d9c8;} .kpi.big b{color:#fff; font-size:1.9rem;}
+  .kpi.ok b{color:var(--success);} .kpi.warn b{color:#9a5b12;}
+  .panel{background:#fff; border:1px solid var(--line); border-radius:14px; padding:14px; margin-bottom:14px;}
+  .panel h3{margin:0 0 12px; font-size:0.95rem; color:var(--espresso);}
+  .chart{display:flex; align-items:flex-end; gap:3px;}
+  .bar-col{flex:1; min-width:0; display:flex; flex-direction:column; align-items:center;}
+  .bar-wrap{height:110px; width:100%; display:flex; align-items:flex-end;}
+  .bar{width:100%; background:var(--gold); border-radius:4px 4px 0 0;}
+  .bar-col span{font-size:0.6rem; color:var(--soft); margin-top:4px; height:12px; white-space:nowrap;}
+  .top-row{display:flex; align-items:center; gap:10px; margin-bottom:10px; font-size:0.88rem;}
+  .top-name{flex:0 0 42%; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:600;}
+  .top-track{flex:1; height:8px; background:var(--cream); border-radius:4px; overflow:hidden;}
+  .top-fill{height:100%; background:var(--brown); border-radius:4px;}
+  .top-qty{flex:0 0 auto; font-weight:800; min-width:34px; text-align:right;}
+  .status-row{display:flex; flex-wrap:wrap; gap:8px;}
 </style>
 </head>
 <body>
 
+<p id="authLoading" class="empty">Loading…</p>
+
 <!-- ============ LOGIN ============ -->
-<section id="loginView" class="login">
+<section id="loginView" class="login" hidden>
   <div class="login-card">
     <h1>La Ville Cafe</h1>
-    <p>Owner login — orders dashboard</p>
+    <p>Owner login — admin portal</p>
     <form id="loginForm">
       <div class="field"><label for="email">Email</label><input id="email" type="email" autocomplete="username" required></div>
       <div class="field"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required></div>
@@ -86,33 +139,55 @@
   </div>
 </section>
 
-<!-- ============ DASHBOARD ============ -->
+<!-- ============ ADMIN PORTAL ============ -->
 <div id="appView" hidden>
   <header>
     <div class="bar">
-      <h1>Orders</h1>
+      <h1>La Ville · Admin</h1>
       <div class="bar-actions">
+        <button class="chip-btn" id="installBtn" hidden>📲 Install</button>
         <button class="chip-btn" id="soundBtn">▶ Start alerts</button>
         <button class="chip-btn" id="logoutBtn">Log out</button>
       </div>
     </div>
   </header>
+
   <main>
-    <div class="filters">
-      <button class="filter active" id="fActive">Active</button>
-      <button class="filter" id="fAll">All</button>
-    </div>
     <div id="banner" class="banner" hidden></div>
-    <div id="list"></div>
+
+    <!-- TAB: live orders -->
+    <section id="tabOrders">
+      <div class="summary" id="ordersSummary"></div>
+      <div id="list"></div>
+    </section>
+
+    <!-- TAB: business dashboard -->
+    <section id="tabDash" hidden>
+      <div class="range" data-range-group></div>
+      <div id="dashBody"></div>
+    </section>
+
+    <!-- TAB: all orders / history -->
+    <section id="tabHistory" hidden>
+      <div class="range" data-range-group></div>
+      <input class="search" id="searchBox" type="search" placeholder="Search name, mobile, order ID, item…">
+      <div class="summary" id="historySummary"></div>
+      <div id="historyList"></div>
+    </section>
   </main>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="orders"><span class="ico">📋</span>Orders<span class="badge" id="tabBadge" hidden>0</span></button>
+    <button class="tab" data-tab="dash"><span class="ico">📊</span>Dashboard</button>
+    <button class="tab" data-tab="history"><span class="ico">🕘</span>History</button>
+  </nav>
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-  import { getFirestore, collection, query, orderBy, limit, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+  import { getFirestore, collection, query, where, orderBy, limit, onSnapshot, doc, updateDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
-  // PASTE YOUR FIREBASE WEB CONFIG HERE (same as in menu.html)
   const firebaseConfig = {
     apiKey: "AIzaSyBahzJEMucesxnuctvcjTJVh1AVnxgp19Q",
     authDomain: "lavillecafe-9.firebaseapp.com",
@@ -123,23 +198,31 @@
   };
 
   const STATUSES = [["new","New"],["preparing","Preparing"],["ready","Ready"],["done","Done"]];
+  const ACTIVE = ["new","preparing","ready"];
+  const RANGES = [["today","Today"],["7d","7 days"],["30d","30 days"]];
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-  const rupee = (n) => "₹" + Number(n || 0).toLocaleString("en-IN");
-
-  const configured = !Object.values(firebaseConfig).some(v => String(v).startsWith("PASTE_"));
-  if(!configured){
-    $("loginError").textContent = "Firebase config is not set in admin.html yet.";
-    $("loginBtn").disabled = true;
-  }
+  const rupee = (n) => "₹" + Math.round(Number(n || 0)).toLocaleString("en-IN");
+  const tsOf = (o) => (o.createdAt && o.createdAt.toDate) ? o.createdAt.toDate() : null;
+  const dayStart = (d) => { const x = new Date(d); x.setHours(0,0,0,0); return x; };
 
   let auth, db, unsub = null;
-  let orders = [], filter = "active", firstLoad = true;
+  let orders = [], range = "today", tab = "orders", firstLoad = true;
   const fresh = new Set();
+
+  /* ---------- service worker (installable app) ---------- */
+  if("serviceWorker" in navigator){ navigator.serviceWorker.register("admin-sw.js").catch(() => {}); }
+  let deferredInstall = null;
+  window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); deferredInstall = e; $("installBtn").hidden = false; });
+  window.addEventListener("appinstalled", () => { $("installBtn").hidden = true; });
+  $("installBtn").addEventListener("click", async () => {
+    if(!deferredInstall) return;
+    deferredInstall.prompt(); await deferredInstall.userChoice;
+    deferredInstall = null; $("installBtn").hidden = true;
+  });
 
   /* ---------- sound + keep-awake ---------- */
   let audioCtx = null, soundOn = false, wakeLock = null;
-
   function beep(){
     if(!soundOn || !audioCtx) return;
     if(audioCtx.state === "suspended") audioCtx.resume();
@@ -154,106 +237,205 @@
       o.start(t0 + off); o.stop(t0 + off + 0.22);
     });
   }
-
-  async function holdScreenAwake(){
-    try{ if("wakeLock" in navigator) wakeLock = await navigator.wakeLock.request("screen"); }catch(e){}
-  }
-  document.addEventListener("visibilitychange", () => {
-    if(soundOn && document.visibilityState === "visible") holdScreenAwake();
-  });
-
+  async function holdScreenAwake(){ try{ if("wakeLock" in navigator) wakeLock = await navigator.wakeLock.request("screen"); }catch(e){} }
+  document.addEventListener("visibilitychange", () => { if(soundOn && document.visibilityState === "visible") holdScreenAwake(); });
   $("soundBtn").addEventListener("click", () => {
     if(!soundOn){
       audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-      soundOn = true;
-      $("soundBtn").textContent = "🔔 Alerts on";
-      $("soundBtn").classList.add("on");
-      beep();               // test beep — also unlocks audio on this browser
-      holdScreenAwake();
+      soundOn = true; $("soundBtn").textContent = "🔔 Alerts on"; $("soundBtn").classList.add("on");
+      beep(); holdScreenAwake();
     } else {
-      soundOn = false;
-      $("soundBtn").textContent = "▶ Start alerts";
-      $("soundBtn").classList.remove("on");
+      soundOn = false; $("soundBtn").textContent = "▶ Start alerts"; $("soundBtn").classList.remove("on");
       if(wakeLock){ wakeLock.release().catch(()=>{}); wakeLock = null; }
     }
   });
 
-  /* ---------- render ---------- */
+  /* ---------- helpers ---------- */
   function fmtTime(d){
     if(!d) return "just now";
     const t = d.toLocaleTimeString([], {hour:"numeric", minute:"2-digit"});
-    return d.toDateString() === new Date().toDateString()
-      ? t : d.toLocaleDateString([], {day:"numeric", month:"short"}) + ", " + t;
+    return d.toDateString() === new Date().toDateString() ? t : d.toLocaleDateString([], {day:"numeric", month:"short"}) + ", " + t;
   }
+  function rangeStart(r){
+    const t = dayStart(new Date());
+    if(r === "7d") t.setDate(t.getDate() - 6);
+    if(r === "30d") t.setDate(t.getDate() - 29);
+    return t;
+  }
+  const inRange = () => { const s = rangeStart(range); return orders.filter(o => { const d = tsOf(o) || new Date(); return d >= s; }); };
+  const valid = (list) => list.filter(o => o.status !== "cancelled");
+  const sum = (list, f) => list.reduce((a, o) => a + Number(f(o) || 0), 0);
 
+  /* ---------- order card ---------- */
   function card(o){
-    const d = o.createdAt && o.createdAt.toDate ? o.createdAt.toDate() : null;
+    const d = tsOf(o);
     const where = o.orderType === "dine-in" ? "Table " + esc(o.tableNumber || "?") : "Takeaway";
     const items = (o.items || []).map(i => `<li><b>${esc(i.qty)}×</b> ${esc(i.name)}</li>`).join("");
     const st = o.status || "new";
+    const paid = o.paymentStatus === "PAID";
     return `
       <article class="order s-${esc(st)}${fresh.has(o.id) ? " fresh" : ""}">
         <div class="o-top">
-          <div><div class="o-id">#${esc(o.orderId)}</div><span class="o-where">${where}</span></div>
+          <div><div class="o-id">#${esc(o.orderId)}${st === "cancelled" ? '<span class="ribbon">CANCELLED</span>' : ""}</div><span class="o-where">${where}</span></div>
           <div class="o-time">${esc(fmtTime(d))}</div>
         </div>
         <div class="o-cust">${esc(o.customerName)} · <a href="tel:${esc(o.mobile)}">${esc(o.mobile)}</a></div>
         <ul class="o-items">${items}</ul>
         ${o.notes ? `<div class="o-notes">📝 ${esc(o.notes)}</div>` : ""}
-        <div class="o-foot"><span>${esc(o.paymentMethod)} · ${esc(o.paymentStatus)}</span><span class="o-total">${rupee(o.grandTotal)}</span></div>
+        <div class="o-foot">
+          <span><span class="pay-badge ${paid ? "paid" : "pending"}">${paid ? "PAID" : "PAYMENT PENDING"}</span> ${esc(o.paymentMethod)}</span>
+          <span class="o-total">${rupee(o.grandTotal)}</span>
+        </div>
         <div class="statuses">
-          ${STATUSES.map(([v, label]) =>
-            `<button class="st ${v}${st === v ? " active" : ""}" data-id="${esc(o.id)}" data-status="${v}">${label}</button>`).join("")}
+          ${STATUSES.map(([v, label]) => `<button class="st ${v}${st === v ? " active" : ""}" data-id="${esc(o.id)}" data-status="${v}">${label}</button>`).join("")}
+        </div>
+        <div class="o-actions">
+          ${paid ? `<button class="act" data-act="unpay" data-id="${esc(o.id)}">✓ Paid · undo</button>`
+                 : `<button class="act pay" data-act="pay" data-id="${esc(o.id)}">💰 Mark as paid</button>`}
+          ${st === "cancelled" ? "" : `<button class="act cancel" data-act="cancel" data-id="${esc(o.id)}">✕ Cancel order</button>`}
         </div>
       </article>`;
   }
 
-  function render(){
-    const active = orders.filter(o => o.status !== "done");
-    const shown = filter === "active" ? active : orders;
-    $("fActive").textContent = `Active (${active.length})`;
-    $("list").innerHTML = shown.length ? shown.map(card).join("")
-      : `<p class="empty">${filter === "active" ? "No active orders right now." : "No orders yet."}</p>`;
+  /* ---------- tab: live orders ---------- */
+  function renderOrders(){
+    const active = orders.filter(o => ACTIVE.includes(o.status || "new"));
+    const n = (s) => active.filter(o => (o.status || "new") === s).length;
+    $("ordersSummary").innerHTML =
+      `<span class="pill">New <b>${n("new")}</b></span><span class="pill">Preparing <b>${n("preparing")}</b></span><span class="pill">Ready <b>${n("ready")}</b></span>`;
+    $("list").innerHTML = active.length ? active.map(card).join("") : `<p class="empty">No active orders right now.</p>`;
+    const nn = n("new");
+    $("tabBadge").textContent = nn; $("tabBadge").hidden = nn === 0;
+    document.title = (nn ? `(${nn}) ` : "") + "La Ville Cafe — Admin";
   }
 
-  $("fActive").addEventListener("click", () => { filter = "active"; $("fActive").classList.add("active"); $("fAll").classList.remove("active"); render(); });
-  $("fAll").addEventListener("click", () => { filter = "all"; $("fAll").classList.add("active"); $("fActive").classList.remove("active"); render(); });
-
-  $("list").addEventListener("click", async (e) => {
-    const b = e.target.closest("button.st");
-    if(!b) return;
-    b.disabled = true;
-    try{
-      await updateDoc(doc(db, "orders", b.dataset.id), { status: b.dataset.status });
-    }catch(err){
-      console.error(err);
-      alert("Could not update status. Check your connection and try again.");
+  /* ---------- tab: dashboard ---------- */
+  function buckets(list){
+    const out = [];
+    if(range === "today"){
+      for(let h = 0; h < 24; h++) out.push({ label: `${h % 12 || 12}${h < 12 ? "a" : "p"}`, value: 0 });
+      list.forEach(o => { const d = tsOf(o) || new Date(); out[d.getHours()].value += Number(o.grandTotal || 0); });
+    } else {
+      const n = range === "7d" ? 7 : 30, s = rangeStart(range);
+      for(let i = 0; i < n; i++){
+        const d = new Date(s); d.setDate(d.getDate() + i);
+        out.push({ label: range === "7d" ? d.toLocaleDateString([], {weekday:"short"}) : String(d.getDate()), value: 0 });
+      }
+      list.forEach(o => {
+        const d = tsOf(o) || new Date();
+        const i = Math.round((dayStart(d) - s) / 86400000);
+        if(out[i]) out[i].value += Number(o.grandTotal || 0);
+      });
     }
-    b.disabled = false;
+    return out;
+  }
+  function chartHTML(bs){
+    const max = Math.max(1, ...bs.map(b => b.value));
+    const step = bs.length > 12 ? Math.ceil(bs.length / 6) : 1;
+    return `<div class="chart">${bs.map((b, i) => `
+      <div class="bar-col" title="${esc(b.label)}: ${rupee(b.value)}">
+        <div class="bar-wrap"><div class="bar" style="height:${b.value ? Math.max(4, Math.round(b.value / max * 100)) : 0}%"></div></div>
+        <span>${i % step === 0 ? esc(b.label) : ""}</span>
+      </div>`).join("")}</div>`;
+  }
+  function renderDash(){
+    const all = inRange(), v = valid(all);
+    const sales = sum(v, o => o.grandTotal), gst = sum(v, o => o.tax);
+    const collected = sum(v.filter(o => o.paymentStatus === "PAID"), o => o.grandTotal);
+    const dine = v.filter(o => o.orderType === "dine-in"), take = v.filter(o => o.orderType !== "dine-in");
+    const items = {};
+    v.forEach(o => (o.items || []).forEach(i => {
+      const k = i.name || "?"; items[k] = items[k] || { qty: 0, rev: 0 };
+      items[k].qty += Number(i.qty || 0); items[k].rev += Number(i.lineTotal || 0);
+    }));
+    const top = Object.entries(items).sort((a, b) => b[1].qty - a[1].qty).slice(0, 8);
+    const topMax = top.length ? top[0][1].qty : 1;
+    const sc = (s) => all.filter(o => (o.status || "new") === s).length;
+    $("dashBody").innerHTML = `
+      <div class="kpis">
+        <div class="kpi big"><span>Total sales</span><b>${rupee(sales)}</b><small>incl. GST ${rupee(gst)} · cancelled orders excluded</small></div>
+        <div class="kpi"><span>Orders</span><b>${v.length}</b></div>
+        <div class="kpi"><span>Avg order value</span><b>${v.length ? rupee(sales / v.length) : "₹0"}</b></div>
+        <div class="kpi ok"><span>Collected (paid)</span><b>${rupee(collected)}</b></div>
+        <div class="kpi warn"><span>Payment pending</span><b>${rupee(sales - collected)}</b></div>
+        <div class="kpi"><span>Dine-in</span><b>${dine.length}</b><small>${rupee(sum(dine, o => o.grandTotal))}</small></div>
+        <div class="kpi"><span>Takeaway</span><b>${take.length}</b><small>${rupee(sum(take, o => o.grandTotal))}</small></div>
+      </div>
+      <div class="panel"><h3>${range === "today" ? "Sales by hour" : "Sales by day"}</h3>${v.length ? chartHTML(buckets(v)) : `<p class="empty" style="padding:20px 0">No sales in this period.</p>`}</div>
+      <div class="panel"><h3>Top items</h3>${top.length ? top.map(([name, s]) => `
+        <div class="top-row"><span class="top-name">${esc(name)}</span><span class="top-track"><span class="top-fill" style="display:block;width:${Math.round(s.qty / topMax * 100)}%"></span></span><span class="top-qty">${s.qty}×</span></div>`).join("")
+        : `<p class="empty" style="padding:20px 0">No items sold yet.</p>`}</div>
+      <div class="panel"><h3>Order status</h3><div class="status-row">
+        <span class="pill">New <b>${sc("new")}</b></span><span class="pill">Preparing <b>${sc("preparing")}</b></span>
+        <span class="pill">Ready <b>${sc("ready")}</b></span><span class="pill">Done <b>${sc("done")}</b></span>
+        <span class="pill">Cancelled <b>${sc("cancelled")}</b></span></div></div>`;
+  }
+
+  /* ---------- tab: history ---------- */
+  function renderHistory(){
+    const q = $("searchBox").value.trim().toLowerCase();
+    const list = inRange().filter(o => !q || [o.orderId, o.customerName, o.mobile, o.tableNumber, (o.items || []).map(i => i.name).join(" ")].join(" ").toLowerCase().includes(q));
+    $("historySummary").innerHTML = `<span class="pill"><b>${list.length}</b> orders</span><span class="pill">Sales <b>${rupee(sum(valid(list), o => o.grandTotal))}</b></span>`;
+    $("historyList").innerHTML = list.length ? list.slice(0, 200).map(card).join("") : `<p class="empty">No orders found.</p>`;
+  }
+
+  function renderAll(){ renderOrders(); renderDash(); renderHistory(); }
+
+  /* ---------- range chips + tabs ---------- */
+  function paintRangeChips(){
+    document.querySelectorAll("[data-range-group]").forEach(g => {
+      g.innerHTML = RANGES.map(([v, l]) => `<button data-range="${v}" class="${range === v ? "active" : ""}">${l}</button>`).join("");
+    });
+  }
+  function setTab(t){
+    tab = t;
+    $("tabOrders").hidden = t !== "orders"; $("tabDash").hidden = t !== "dash"; $("tabHistory").hidden = t !== "history";
+    document.querySelectorAll(".tab").forEach(b => b.classList.toggle("active", b.dataset.tab === t));
+    window.scrollTo(0, 0);
+  }
+  $("searchBox").addEventListener("input", renderHistory);
+
+  /* ---------- clicks: status / payment / cancel / range / tabs ---------- */
+  async function update(id, fields, btn){
+    btn.disabled = true;
+    try{ await updateDoc(doc(db, "orders", id), fields); }
+    catch(err){ console.error(err); alert("Could not update. Check your connection and try again."); }
+    btn.disabled = false;
+  }
+  document.addEventListener("click", async (e) => {
+    const st = e.target.closest("button.st");
+    if(st){ await update(st.dataset.id, { status: st.dataset.status }, st); return; }
+    const act = e.target.closest("button.act");
+    if(act){
+      const o = orders.find(x => x.id === act.dataset.id); if(!o) return;
+      if(act.dataset.act === "pay") await update(o.id, { paymentStatus: "PAID" }, act);
+      else if(act.dataset.act === "unpay") await update(o.id, { paymentStatus: "PENDING" }, act);
+      else if(act.dataset.act === "cancel" && confirm(`Cancel order #${o.orderId}?`)) await update(o.id, { status: "cancelled" }, act);
+      return;
+    }
+    const r = e.target.closest("[data-range]");
+    if(r){ range = r.dataset.range; paintRangeChips(); renderAll(); return; }
+    const t = e.target.closest("[data-tab]");
+    if(t) setTab(t.dataset.tab);
   });
 
-  /* ---------- live orders ---------- */
-  function showBanner(msg, isError){
-    $("banner").textContent = msg; $("banner").hidden = !msg;
-    $("banner").classList.toggle("error", !!isError);
-  }
-
+  /* ---------- live data (last 31 days) ---------- */
+  function showBanner(msg, isError){ $("banner").textContent = msg; $("banner").hidden = !msg; $("banner").classList.toggle("error", !!isError); }
   function subscribe(){
     firstLoad = true;
-    const q = query(collection(db, "orders"), orderBy("createdAt", "desc"), limit(100));
+    const since = rangeStart("30d"); since.setDate(since.getDate() - 1);
+    const q = query(collection(db, "orders"), where("createdAt", ">=", Timestamp.fromDate(since)), orderBy("createdAt", "desc"), limit(1500));
     unsub = onSnapshot(q, (snap) => {
       showBanner("");
       let added = 0;
-      if(!firstLoad){
-        snap.docChanges().forEach(c => { if(c.type === "added"){ added++; fresh.add(c.doc.id); } });
-      }
+      if(!firstLoad) snap.docChanges().forEach(c => { if(c.type === "added"){ added++; fresh.add(c.doc.id); } });
       firstLoad = false;
       orders = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      render();
+      renderAll();
       if(added){
         beep();
         if(navigator.vibrate) navigator.vibrate([200, 100, 200]);
-        setTimeout(() => { fresh.clear(); render(); }, 5500);
+        setTimeout(() => { fresh.clear(); renderAll(); }, 5500);
       }
     }, (err) => {
       console.error(err);
@@ -264,37 +446,35 @@
   }
 
   /* ---------- auth ---------- */
-  if(configured){
-    auth = getAuth(initializeApp(firebaseConfig));
-    db = getFirestore(auth.app);
+  paintRangeChips();
+  auth = getAuth(initializeApp(firebaseConfig));
+  db = getFirestore(auth.app);
 
-    onAuthStateChanged(auth, (user) => {
-      if(user){
-        $("loginView").hidden = true; $("appView").hidden = false;
-        if(!unsub) subscribe();
-      } else {
-        if(unsub){ unsub(); unsub = null; }
-        orders = []; $("appView").hidden = true; $("loginView").hidden = false;
-      }
-    });
+  onAuthStateChanged(auth, (user) => {
+    $("authLoading").hidden = true;
+    if(user){
+      $("loginView").hidden = true; $("appView").hidden = false;
+      if(!unsub) subscribe();
+    } else {
+      if(unsub){ unsub(); unsub = null; }
+      orders = []; $("appView").hidden = true; $("loginView").hidden = false;
+    }
+  });
 
-    $("loginForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      $("loginError").textContent = ""; $("loginBtn").disabled = true;
-      try{
-        await signInWithEmailAndPassword(auth, $("email").value.trim(), $("password").value);
-      }catch(err){
-        const wrong = ["auth/invalid-credential","auth/wrong-password","auth/user-not-found","auth/invalid-email"];
-        $("loginError").textContent = wrong.includes(err.code)
-          ? "Wrong email or password."
-          : err.code === "auth/too-many-requests" ? "Too many attempts. Try again in a few minutes."
-          : "Could not log in. Check your connection.";
-      }
-      $("loginBtn").disabled = false;
-    });
-
-    $("logoutBtn").addEventListener("click", () => signOut(auth));
-  }
+  $("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    $("loginError").textContent = ""; $("loginBtn").disabled = true;
+    try{
+      await signInWithEmailAndPassword(auth, $("email").value.trim(), $("password").value);
+    }catch(err){
+      const wrong = ["auth/invalid-credential","auth/wrong-password","auth/user-not-found","auth/invalid-email"];
+      $("loginError").textContent = wrong.includes(err.code) ? "Wrong email or password."
+        : err.code === "auth/too-many-requests" ? "Too many attempts. Try again in a few minutes."
+        : "Could not log in. Check your connection.";
+    }
+    $("loginBtn").disabled = false;
+  });
+  $("logoutBtn").addEventListener("click", () => signOut(auth));
 </script>
 </body>
 </html>
